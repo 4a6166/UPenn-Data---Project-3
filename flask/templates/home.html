@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <!-- tailwind - css classes -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- D3 -->
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin="" />
+
+  <!-- Leaflet JavaScript code -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""></script>
+
+  <!-- project css -->
+  <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='style.css') }}">
+</head>
+<body>
+  <h1 class="text-3xl font-bold underline">I have loaded.</h1>
+  <div class="bg-blue-500 text-white p-4 text-5xl">Here is a title</div>
+  <select name="test_select" id="test_select">
+    <option value="a">A</option>
+    <option value="b">B</option>
+  </select>
+
+  <!-- flexbox to put charts inside -->
+  <div class="flex flex-wrap mb-4">
+    <div id="map" class="w-3/4 bg-gray-500 h12">SPACE</div>
+    <div id="scatter" class="w-1/4 bg-gray-400 h12">SPACE</div>
+    <div id="radar" class="w-1/2 ml-auto bg-gray-500 h12">SPACE</div>
+    <div id="slope" class="w-1/4 ml-auto bg-gray-400 h12">SPACE</div>
+  </div>
+  
+</body>
+
+<!-- user scripts in static folder-->
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+
+<!-- lodash - data manipulation -->
+<script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+
+<!-- chartjs - alt charting system -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<!-- amCharts - charting lib -->
+<script src="https://cdn.amcharts.com/lib/5/index.js"></script>
+<script src="https://cdn.amcharts.com/lib/5/xy.js"></script>
+<script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
+<script src="https://cdn.amcharts.com/lib/5/locales/de_DE.js"></script>
+<script src="https://cdn.amcharts.com/lib/5/geodata/germanyLow.js"></script>
+<script src="https://cdn.amcharts.com/lib/5/fonts/notosans-sc.js"></script>
+
+<!-- KNN cluserting algo -->
+<!-- example: https://hackernoon.com/machine-learning-with-javascript-part-2-da994c17d483 -->
+<script src="https://cdn.jsdelivr.net/npm/ml-knn@3.0.0/lib/index.min.js"></script>
+</html>
