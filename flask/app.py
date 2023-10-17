@@ -1,7 +1,8 @@
-from flask import Flask, render_template, jsonify  # Lesson 10-3
+from flask import Flask, render_template, jsonify, url_for  # Lesson 10-3
 from sqlalchemy import create_engine, Column, Integer, String, Float
 from sqlalchemy.orm import Session
 from sqlalchemy.ext.declarative import declarative_base
+import json
 
 Base = declarative_base()
 
@@ -98,6 +99,24 @@ def api_test():
                ]
 
     return jsonify(results)
+
+
+@app.route("/data/boundaries")
+def get_boundaries():
+    # url_for('static', filename='Pennsylvania School Districts Boundaries.geojson')
+    return url_for('static', filename='Pennsylvania School Districts Boundaries.geojson')
+
+
+# calls the geojson file and passes it to a js var
+@app.route("/map")
+def get_map():
+    results = 'RESULTS'
+    boundaries = ''
+
+    with open('static/Pennsylvania School Districts Boundaries.geojson') as file:
+        boundaries = json.load(file)
+
+    return render_template("home.html", query_results=results, boundaries=boundaries)
 
 
 # set debugger
