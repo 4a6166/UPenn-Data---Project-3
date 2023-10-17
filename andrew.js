@@ -41,7 +41,7 @@ let myMap = L.map("map", {
 
     // Binding a popup to each layer
     onEachFeature: function(feature, layer) {
-      layer.bindPopup("<strong>" + feature.properties.school_dis + "</strong><br /><br />Per Pupil Expenditure 2020-21: $" +
+      layer.bindPopup("<strong>" + feature.properties.school_dis + "</strong><br /><br />Per Pupil Expenditure 2018-19: $" +
         feature.properties.pupil_expend);
     }
   }).addTo(myMap);
