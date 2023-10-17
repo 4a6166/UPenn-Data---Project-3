@@ -28,7 +28,7 @@ let myMap = L.map("map", {
     scale: ["#f7fcf5", "#00441b"],
 
     // The number of breaks in the step range
-    steps: 10,
+    steps: 20,
 
     // q for quartile, e for equidistant, k for k-means
     mode: "q",
@@ -41,7 +41,7 @@ let myMap = L.map("map", {
 
     // Binding a popup to each layer
     onEachFeature: function(feature, layer) {
-      layer.bindPopup("<strong>" + feature.properties.school_dis + "</strong><br /><br />Per Pupil Expenditure 2021-22: " +
+      layer.bindPopup("<strong>" + feature.properties.school_dis + "</strong><br /><br />Per Pupil Expenditure 2020-21: $" +
         feature.properties.pupil_expend);
     }
   }).addTo(myMap);
