@@ -10,3 +10,4 @@
 let header = document.getElementsByTagName("h1")
 
 header[0].style.background = 'blue'
+

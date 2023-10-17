@@ -1,4 +1,4 @@
-from flask import Flask, render_template  # Lesson 10-3
+from flask import Flask, render_template, jsonify  # Lesson 10-3
 from sqlalchemy import create_engine, Column, Integer, String, Float
 from sqlalchemy.orm import Session
 from sqlalchemy.ext.declarative import declarative_base
@@ -48,7 +48,15 @@ def home():
     print("App running")
 
     # set results var to be passed to js via render_template
-    results = []  # populate this with new dics for all the data needed to pass
+    results = ['Populate this with new dics for all the data needed to pass',
+               ['nested', 'lists', 'work'],
+               {'1. dictionaries': 'Work here too!',
+                '2. as do': {'nested': 'dicts'}
+                },
+               'So, tell me what data you need and I\'ll serve it through a variable',
+               'specifically "query_results',
+               'and it will pull in for each page'
+               ]
 
     ############################################
     # Run a query!!!!!!!!
@@ -73,6 +81,23 @@ def get_post(post_id):
         return query
 
     return render_template("home.html", query_result=run_query(query))
+
+
+# Provide an API
+@app.route("/api/test")
+def api_test():
+
+    results = ['Populate this with new dics for all the data needed to pass',
+               ['nested', 'lists', 'work'],
+               {'1. dictionaries': 'Work here too!',
+                '2. as do': {'nested': 'dicts'}
+                },
+               'So, tell me what data you need and I\'ll serve it through a variable',
+               'specifically "query_results',
+               'and it will pull in for each page'
+               ]
+
+    return jsonify(results)
 
 
 # set debugger
