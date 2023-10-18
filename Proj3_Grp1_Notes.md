@@ -117,3 +117,73 @@ Possible Questions to Consider:
 - Choropleth map by county or school district view 
 - Markers in the county for the school district or summary statistics card if cannot segment by school district
 
+Monday - 10/16 Notes
+flask - week 10 similar outline
+flask run
+first - get db
+second - routes to tree of html documents
+default is home page - then buttons can host other pages or an API
+dashboard - would be homepage - visuablizations would grab data from database loaded in 
+app.py file 
+
+python file using SQLAlchemy - pandas - push to database
+SQLite viewer - view database 
+SQLite and SQLAlchemy
+
+pipeline - push through to JS variable
+query result - pull in data . into visualization and data
+flask lets you pass in data 
+
+or create APIs - access like a normal API 
+different api for each visualization 
+API smaller buckets so not a full query - 
+
+database start to try it out and then a full 
+types of data to pull into visualization - query to pass through the API 
+
+initial thought
+test score data
+per pupil expenditure
+median income
+tax info
+
+homepage - what do we want people to know - how financilas/expenditures relate to performance?
+first page - map page toggle through learner groups (std, iep, ill) and the metric (score, expenditure, etc)
+second - scatter score vs expenditure - how related are they - 3 plots one each of score vs expenditure - 
+    cluster chart - color changes or circles 
+
+same page as a comparison - 
+third - slope graph - explanation of rankings - compare to article 
+fourth - radar chart - select their school district to drill down - individual school view
+
+dropdown of multiple years if easy to download 
+did COVID affect test scores and median income
+start with 2019 data to have a complete year - 
+
+statistical analysis - 
+state average 
+
+next buttons to force structure to data 
+
+weighted averages for school test scores - peter - null values 
+ELL - IEP - limited number of students they wont report subcategory bc of identity
+
+consider school size?
+proficienty percentage per subject - first map visual 
+
+scatter plot - adjust for other mitigating factors like number of students, etc. 
+
+define achievement - 
+ROI - 
+ratio of scores to spend 
+
+add notes to the charts - self guided exploration of the data 
+app / templates - html filled by flask as served / static - js and css
+words added to HTML file 
+header same for every website 
+TAILWIND - css 
+Bootstrap 
+
+2020 spiked funding for COVID related stipends - possibility
+
+scatter plot - expenditure vs median income 

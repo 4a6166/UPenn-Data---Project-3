@@ -1,0 +1,99 @@
+keystone_school
+--
+grade INT
+aun INT PK
+school_number INT
+county VARCHAR(100)
+school_district VARCHAR(250) FK >- taxable_income_range.school_district
+school_name VARCHAR(250)
+subject VARCHAR(100)
+group VARCHAR(100)
+number_scored INT
+percent_advanced FLOAT
+percent_proficient FLOAT
+percent_basic FLOAT
+percent_below_basic FLOAT
+
+keystone_state
+--
+subject VARCHAR(100) PK FK >- keystone_school.subject
+group VARCHAR(100)
+grade INT
+number_scored INT
+percent_advanced FLOAT
+percent_proficient FLOAT
+percent_basic FLOAT
+percent_below_basic FLOAT
+percent_advanced_proficient FLOAT
+
+taxable_income_range
+--
+school_district VARCHAR(250) PK FK >- total_sd_expenditures.school_district
+taxable_income_range VARCHAR(50)
+number_of_returns INT
+taxable_compensation INT
+interest INT
+dividents INT
+net_profits INT
+other_taxable_income INT
+total_taxable_income INT
+
+per_pupil_expenditures
+--
+aun INT PK FK >- keystone_school.aun
+lea_name VARCHAR(250)
+county VARCHAR(100)
+local_personnel_expenditures FLOAT
+local_nonpersonnel_expenditures FLOAT
+state_personnel_expenditures FLOAT
+state_nonpersonnel_expenditures FLOAT
+federal_personnel_expenditures FLOAT
+federal_nonpersonnel_expenditures FLOAT
+adm FLOAT
+local_per_pupil_expenditure FLOAT
+local_nonper_pupil_expenditure FLOAT
+state_per_pupil_expenditure FLOAT
+state_nonper_pupil_expenditure FLOAT
+federal_per_pupil_expenditure FLOAT
+federal_nonper_pupil_expenditure FLOAT
+
+total_sd_expenditures
+--
+aun INT PK FK >- keystone_school.aun
+school_district VARCHAR(250) FK >- keystone_school.school_district
+county VARCHAR(100)
+average_daily_membership FLOAT
+instruction_per_adm FLOAT
+support_services_per_adm FLOAT
+noninstructional_per_adm FLOAT
+current_exp_per_adm FLOAT
+facilities_acquisition_construction_per_adm FLOAT
+other_financing_uses_per_adm FLOAT
+total_exp_per_adm FLOAT
+aie_per_wadm FLOAT
+
+afr_revenues
+--
+aun INT PK FK >- keystone_school.aun
+lea_name VARCHAR(250)
+county VARCHAR(100)
+average_daily_membership FLOAT
+total_revenue_per_adm FLOAT
+total_rank1 INT
+local_revenue_per_adm FLOAT
+total_rank2 INT
+state_revenue_per_adm FLOAT
+total_rank3 INT
+federal_revenue_per_adm FLOAT
+total_rank4 INT
+other_revenue_per_adm FLOAT
+total_rank5 INT
+
+locale_codes
+--
+lea_name VARCHAR(250)
+aun INT PK FK >- keystone_school.aun
+nces_id INT
+county_number INT
+locale VARCHAR(250)
+metro_code VARCHAR(250)
