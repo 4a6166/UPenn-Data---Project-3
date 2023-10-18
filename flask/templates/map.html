@@ -19,6 +19,24 @@
               bg-white
               font-serif
               ">
+
+
+
+  <!-- example elements you may want to use, styled with Tailwind -->
+  <!-- These will not show up because the top div has class "hidden" -->
+  <div class="hidden">
+    <h1 class="text-3xl font-bold underline">I have loaded.</h1>
+    <div class="bg-blue-500 text-white p-4 text-5xl">Here is a title</div>
+    <select name="test_select" id="test_select">
+      <option value="a">A</option>
+      <option value="b">B</option>
+    </select>
+  </div>
+
+  
+
+
+  <!-- Starting the visible page -->
   <div class=" w-screen
                grow
                flex
@@ -78,33 +96,28 @@
         Icons by <a target="_blank" href="https://icons8.com">Icons8</a>
       </div>
     </div>
+      <!-- flexbox to put charts inside -->
     <div id="viz" class="w-full
                          y-full
                          flex
-                         flex-col
-                         items-center
                          ">
-      <div class="w-full relative">
-        <img src="{{ url_for('static', filename='img/pexels-katerina-holmes-5905492.jpg') }}"
-             alt="Photo of teacher instructing students" 
-             class="w-full h-[36rem] object-cover object-center"
-             />
-        <a href="Photo by Katerina Holmes: https://www.pexels.com/photo/anonymous-ethnic-tutor-helping-little-multiracial-students-with-task-in-classroom-5905492/"
-          class="absolute bottom-0 right-0 p-2 text-xs">
-          Photo by Katerina Holmes
-        </a>
-      </div>
-      <div class="grow flex flex-col justify-center items-center">
-        <p class="font-bold text-sky-400">Research Question:</p> 
-        <p class="p-4 mb-4 text-5xl text-center">
-          Can difference in funding account for variance </br>in testing scores across PA schools?
-        </p>
-        <p class="text-2xl">
-        We looked at the
-        <span class="text-sky-600 font-extrabold text-3xl">500 school districts</span> 
-        that make up the Pennsylvania School System to find out.
-        </p>
-      </div>
+        <div id="graphics" class="w-3/4 flex items-center justify-center">
+          <div id="chart">CHARTS GO HERE</div>
+        </div>
+        <div id="commentary" class="w-1/4
+                                    p-4
+                                    flex
+                                    flex-col
+                                    justify-evenly
+          ">
+          <div id="notes">
+            <p>Here are some notes:
+            <p>One or two paragraphs about the visualization to keep us on track during the presentation
+          </div>
+          <div id="attributions" class="text-sm">
+            <p>And maybe some attributions for the data if needed.
+          </div>
+        </div>
     </div>
 
   </div>
@@ -113,13 +126,38 @@
 </body>
 
 <!-- ############### -->
+<!-- CND Calls -->
+<!-- ############### -->
+
+<!-- D3 -->
+<script src="https://d3js.org/d3.v7.min.js"></script>
+
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+  crossorigin="" />
+
+<!-- Leaflet JavaScript code -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+  integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+  crossorigin=""></script>
+
+<!-- chartjs - alt charting system -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<!-- KNN cluserting algo -->
+<!-- example: https://hackernoon.com/machine-learning-with-javascript-part-2-da994c17d483 -->
+<script src="https://cdn.jsdelivr.net/npm/ml-knn@3.0.0/lib/index.min.js"></script>
+
+<!-- ############### -->
 <!-- User Scripts -->
 <!-- ############### -->
 
 <!-- define vars passed by flask -->
 <script type="text/javascript">
-  // boundaries = {{boundaries | tojson}};
-  // console.log("Query results loaded");
+  query_results = {{query_results | tojson}};
+  boundaries = {{boundaries | tojson}};
+  console.log("Query results loaded");
 </script>
 
 <!-- user scripts in static folder-->

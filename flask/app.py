@@ -64,7 +64,7 @@ def home():
     ############################################
 
     # render the dashboard template
-    return render_template("home.html", query_results=results)
+    return render_template("home.html", query_results=results, boundaries="")
 
 
 # Run a query from a POST
@@ -101,12 +101,6 @@ def api_test():
     return jsonify(results)
 
 
-@app.route("/data/boundaries")
-def get_boundaries():
-    # url_for('static', filename='Pennsylvania School Districts Boundaries.geojson')
-    return url_for('static', filename='Pennsylvania School Districts Boundaries.geojson')
-
-
 # calls the geojson file and passes it to a js var
 @app.route("/map")
 def get_map():
@@ -116,7 +110,22 @@ def get_map():
     with open('static/Pennsylvania School Districts Boundaries.geojson') as file:
         boundaries = json.load(file)
 
-    return render_template("home.html", query_results=results, boundaries=boundaries)
+    return render_template("map.html", query_results=results, boundaries=boundaries)
+
+
+@app.route("/scatter")
+def get_scatter():
+    return render_template("scatter.html")
+
+
+@app.route("/slope")
+def get_slope():
+    return render_template("slope.html")
+
+
+@app.route("/radar")
+def get_radar():
+    return render_template("radar.html")
 
 
 # set debugger
