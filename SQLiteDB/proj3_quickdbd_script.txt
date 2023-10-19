@@ -1,7 +1,8 @@
 keystone_school
 --
+index INT PK
 grade INT
-aun INT PK
+aun INT 
 school_number INT
 county VARCHAR(100)
 school_district VARCHAR(250) FK >- taxable_income_range.school_district
