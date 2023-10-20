@@ -1,47 +1,44 @@
-keystone_school
+ppa_schools
 --
-index INT PK
-grade INT
-aun INT 
-school_number INT
+aun INT FK >- keystone_literature.aun
+school_number INT PK
 county VARCHAR(100)
-school_district VARCHAR(250) FK >- taxable_income_range.school_district
+school_district VARCHAR(250)
 school_name VARCHAR(250)
-subject VARCHAR(100)
-group VARCHAR(100)
+
+keystone_biology
+--
+aun INT FK >- pa_schools.aun
+school_number INT PK FK >- pa_schools.school_number
 number_scored INT
 percent_advanced FLOAT
 percent_proficient FLOAT
 percent_basic FLOAT
 percent_below_basic FLOAT
 
-keystone_state
+keystone_algebra
 --
-subject VARCHAR(100) PK FK >- keystone_school.subject
-group VARCHAR(100)
-grade INT
+aun INT FK >- pa_schools.aun
+school_number INT PK FK >- pa_schools.school_number
 number_scored INT
 percent_advanced FLOAT
 percent_proficient FLOAT
 percent_basic FLOAT
 percent_below_basic FLOAT
-percent_advanced_proficient FLOAT
 
-taxable_income_range
+keystone_literature
 --
-school_district VARCHAR(250) PK FK >- total_sd_expenditures.school_district
-taxable_income_range VARCHAR(50)
-number_of_returns INT
-taxable_compensation INT
-interest INT
-dividents INT
-net_profits INT
-other_taxable_income INT
-total_taxable_income INT
+aun INT 
+school_number INT PK FK >- pa_schools.school_number
+number_scored INT
+percent_advanced FLOAT
+percent_proficient FLOAT
+percent_basic FLOAT
+percent_below_basic FLOAT
 
 per_pupil_expenditures
 --
-aun INT PK FK >- keystone_school.aun
+aun INT PK FK >- keystone_algebra.aun
 lea_name VARCHAR(250)
 county VARCHAR(100)
 local_personnel_expenditures FLOAT
@@ -57,6 +54,21 @@ state_per_pupil_expenditure FLOAT
 state_nonper_pupil_expenditure FLOAT
 federal_per_pupil_expenditure FLOAT
 federal_nonper_pupil_expenditure FLOAT
+
+***
+
+taxable_income_range
+--
+school_district VARCHAR(250) PK FK >- total_sd_expenditures.school_district
+taxable_income_range VARCHAR(50)
+number_of_returns INT
+taxable_compensation INT
+interest INT
+dividents INT
+net_profits INT
+other_taxable_income INT
+total_taxable_income INT
+
 
 total_sd_expenditures
 --
