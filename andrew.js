@@ -14,8 +14,6 @@ let myMap = L.map("map", {
   
   // Get the data with d3.
   d3.json(geoData).then(function(data) {
-  
-    console.log(data);
 
     // Create a new choropleth layer.
   let geojson = L.choropleth(data, {
@@ -41,8 +39,9 @@ let myMap = L.map("map", {
 
     // Binding a popup to each layer
     onEachFeature: function(feature, layer) {
-      layer.bindPopup("<strong>" + feature.properties.school_dis + "</strong><br /><br />Per Pupil Expenditure 2018-19: $" +
-        feature.properties.pupil_expend);
+      layer.bindPopup('<h2>' + feature.properties.school_dis + '</h2> <strong>Per Pupil Expenditure 2018-19:</strong> $' +
+        feature.properties.pupil_expend + '<br />' + '<strong>Algebra Proficiency:</strong> XX%' + '<br />' +
+        '<strong>Literature Proficiency:</strong> XX%' + '<br />' + '<strong>Biology Proficiency:</strong> XX%');
     }
   }).addTo(myMap);
 
