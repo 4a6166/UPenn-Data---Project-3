@@ -15,7 +15,7 @@ let myMap = L.map("map", {
   // Get the data with d3.
   d3.json(geoData).then(function(data) {
 
-    // Create a new choropleth layer.
+  // Create a new choropleth layer.
   let geojson = L.choropleth(data, {
 
     // Define which property in the features to use.
