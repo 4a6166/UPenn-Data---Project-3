@@ -1,35 +1,17 @@
 from flask import Flask, render_template, jsonify, url_for  # Lesson 10-3
-from sqlalchemy import create_engine, Column, Integer, String, Float
+from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.ext.automap import automap_base
+from sqlalchemy.sql import func
 import json
 
-Base = declarative_base()
-
-
-# set up classes
-class TempClass(Base):
-    __tablename__ = 'temp'
-    id = Column(Integer, primary_key=True)
-    name = Column(String(255))
-    decimal = Column(Float)
-
-
 # connect to DB
-engine = create_engine("sqlite:///dbname.sqlite")
-conn = engine.connect()
+engine = create_engine("sqlite:///pa_school_district.db")
+Base = automap_base()
+Base.prepare(autoload_with=engine)
+print(Base.classes.keys())
 
-# abstract dab
-Base.metadata.create_all(engine)
-
-# create session
-session = Session(bind=engine)
-
-# # How to query SQL class
-# rows = session.query(TempClass).\
-#        filter(TempClass.decimal == 1.5).count()
-# for row in rows:
-#     print(row.name)
+session = Session(engine)
 
 
 ######################################################################
@@ -48,23 +30,21 @@ def home():
     # log to console that route connected
     print("App running")
 
-    # set results var to be passed to js via render_template
-    results = ['Populate this with new dics for all the data needed to pass',
-               ['nested', 'lists', 'work'],
-               {'1. dictionaries': 'Work here too!',
-                '2. as do': {'nested': 'dicts'}
-                },
-               'So, tell me what data you need and I\'ll serve it through a variable',
-               'specifically "query_results',
-               'and it will pull in for each page'
-               ]
+    results = []
+    table = session.query(Base.classes.pa_schools.County,
+                          Base.classes.pa_schools.AUN,
+                          func.sum(Base.classes.keystone_biology.Advanced + Base.classes.keystone_biology.Proficient)
+                          ).group_by(Base.classes.pa_schools.County)
 
-    ############################################
-    # Run a query!!!!!!!!
-    ############################################
+    for row in table:
+        r = []
+        for cell in row:
+            r.append(cell)
+        results.append(r)
+        # results.append({"County": row[0], "AUN": row[1]})
 
     # render the dashboard template
-    return render_template("home.html", query_results=results, boundaries="")
+    return render_template("home.html", query_results=results)
 
 
 # Run a query from a POST

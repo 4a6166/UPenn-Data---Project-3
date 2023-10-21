@@ -118,11 +118,12 @@
 
 <!-- define vars passed by flask -->
 <script type="text/javascript">
-  // boundaries = {{boundaries | tojson}};
+  console.log("hi")
+  query_results = {{query_results | tojson }}
   // console.log("Query results loaded");
 </script>
 
 <!-- user scripts in static folder-->
-<script src="{{ url_for('static', filename='app.js') }}"></script>
+<!-- <script src="{{ url_for('static', filename='app.js') }}"></script> -->
 
 </html>
