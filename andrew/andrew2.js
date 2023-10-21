@@ -1,5 +1,5 @@
 // Creating the map object
-let myMap = L.map("map", {
+let myMap = L.map("chart", {
     center: [41, -77.194527],
     zoom: 7
   });

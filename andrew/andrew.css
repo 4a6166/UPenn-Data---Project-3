@@ -3,7 +3,7 @@ body {
     margin: 0;
   }
   
-  #map,
+  #chart,
   body,
   html {
     height: 100%;
@@ -54,7 +54,7 @@ body {
     flex-direction: column;
   }
 
-  #map {
+  #chart {
     position: relative;
     float: right;
     width: 80%; /* Adjust the width as needed */
