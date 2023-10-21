@@ -1,112 +1,184 @@
-ppa_schools
+QDB 1:
+
+pa_schools
 --
-aun INT FK >- keystone_literature.aun
-school_number INT PK
-county VARCHAR(100)
-school_district VARCHAR(250)
-school_name VARCHAR(250)
+AUN INT 
+SchoolNumber INT PK
+County VARCHAR(100)
+District VARCHAR(250)
+School VARCHAR(250)
 
 keystone_biology
 --
-aun INT FK >- pa_schools.aun
-school_number INT PK FK >- pa_schools.school_number
-number_scored INT
-percent_advanced FLOAT
-percent_proficient FLOAT
-percent_basic FLOAT
-percent_below_basic FLOAT
+AUN INT FK >- pa_schools.AUN
+SchoolNumber INT PK 
+NumberScored INT
+Advanced FLOAT
+Proficient FLOAT
+Basic FLOAT
+BelowBasic FLOAT
 
 keystone_algebra
 --
-aun INT FK >- pa_schools.aun
-school_number INT PK FK >- pa_schools.school_number
-number_scored INT
-percent_advanced FLOAT
-percent_proficient FLOAT
-percent_basic FLOAT
-percent_below_basic FLOAT
+AUN INT FK >- pa_schools.AUN
+SchoolNumber INT PK 
+NumberScored INT
+Advanced FLOAT
+Proficient FLOAT
+Basic FLOAT
+BelowBasic FLOAT
 
 keystone_literature
 --
-aun INT 
-school_number INT PK FK >- pa_schools.school_number
-number_scored INT
-percent_advanced FLOAT
-percent_proficient FLOAT
-percent_basic FLOAT
-percent_below_basic FLOAT
+AUN INT FK >- pa_schools.AUN
+SchoolNumber INT PK 
+NumberScored INT
+Advanced FLOAT
+Proficient FLOAT
+Basic FLOAT
+BelowBasic FLOAT
 
-per_pupil_expenditures
+
+
+
+QDB 2:
+
+pa_schools
 --
-aun INT PK FK >- keystone_algebra.aun
-lea_name VARCHAR(250)
-county VARCHAR(100)
-local_personnel_expenditures FLOAT
-local_nonpersonnel_expenditures FLOAT
-state_personnel_expenditures FLOAT
-state_nonpersonnel_expenditures FLOAT
-federal_personnel_expenditures FLOAT
-federal_nonpersonnel_expenditures FLOAT
-adm FLOAT
-local_per_pupil_expenditure FLOAT
-local_nonper_pupil_expenditure FLOAT
-state_per_pupil_expenditure FLOAT
-state_nonper_pupil_expenditure FLOAT
-federal_per_pupil_expenditure FLOAT
-federal_nonper_pupil_expenditure FLOAT
+AUN INT 
+SchoolNumber INT PK
+County VARCHAR(100)
+District VARCHAR(250)
+School VARCHAR(250)
 
-***
-
-taxable_income_range
+locale
 --
-school_district VARCHAR(250) PK FK >- total_sd_expenditures.school_district
-taxable_income_range VARCHAR(50)
-number_of_returns INT
-taxable_compensation INT
-interest INT
-dividents INT
-net_profits INT
-other_taxable_income INT
-total_taxable_income INT
+District VARCHAR(250)
+AUN INT PK FK >- pa_schools.AUN
+Locale VARCHAR(250)
+Metro VARCHAR(250)
 
-
-total_sd_expenditures
+income
 --
-aun INT PK FK >- keystone_school.aun
-school_district VARCHAR(250) FK >- keystone_school.school_district
-county VARCHAR(100)
-average_daily_membership FLOAT
-instruction_per_adm FLOAT
-support_services_per_adm FLOAT
-noninstructional_per_adm FLOAT
-current_exp_per_adm FLOAT
-facilities_acquisition_construction_per_adm FLOAT
-other_financing_uses_per_adm FLOAT
-total_exp_per_adm FLOAT
-aie_per_wadm FLOAT
+Income FLOAT
+District VARCHAR(250) PK FK >- pa_schools.District
 
-afr_revenues
+enrollment
 --
-aun INT PK FK >- keystone_school.aun
-lea_name VARCHAR(250)
-county VARCHAR(100)
-average_daily_membership FLOAT
-total_revenue_per_adm FLOAT
-total_rank1 INT
-local_revenue_per_adm FLOAT
-total_rank2 INT
-state_revenue_per_adm FLOAT
-total_rank3 INT
-federal_revenue_per_adm FLOAT
-total_rank4 INT
-other_revenue_per_adm FLOAT
-total_rank5 INT
+AUN INT PK FK >- pa_schools.AUN
+District VARCHAR(250)
+LEAType VARCHAR(10)
+County VARCHAR(100)
+PKA INT
+PKP INT
+PKF INT
+K4A INT
+K4P INT
+K4F INT
+K5A INT
+K5P INT
+K5F INT
+First INT
+Second INT
+Third INT
+Fourth INT
+Fifth INT
+Sixth INT
+Seventh INT
+Eighth INT
+Ninth INT
+Tenth INT
+Eleventh INT
+Twelfth INT
+HS_Total INT
+SD_Total INT
 
-locale_codes
+
+QDB 3:
+
+pa_schools
 --
-lea_name VARCHAR(250)
-aun INT PK FK >- keystone_school.aun
-nces_id INT
-county_number INT
-locale VARCHAR(250)
-metro_code VARCHAR(250)
+AUN INT 
+SchoolNumber INT PK
+County VARCHAR(100)
+District VARCHAR(250)
+School VARCHAR(250)
+
+person_spend
+--
+AUN INT PK FK >- pa_schools.AUN
+District VARCHAR(250) FK >- total_sd_spend.District
+County VARCHAR(100)
+LocalPersonnel FLOAT
+LocalNonPersonnel FLOAT
+StatePersonnel FLOAT
+StateNonPersonnel FLOAT
+FedPersonnel FLOAT
+FedNonPersonnel FLOAT
+ADM FLOAT
+LocalPupil FLOAT
+LocalNonPupil FLOAT
+StatePupil FLOAT
+StateNonPupil FLOAT
+FedPupil FLOAT
+FedNonPupil FLOAT
+
+total_sd_spend
+--
+AUN INT PK FK >- pa_schools.AUN
+District VARCHAR(250)
+County VARCHAR(100)
+Instruction FLOAT
+SupportServices FLOAT
+Operations FLOAT
+CurrentSpend FLOAT
+Facilities FLOAT
+OtherSpend FLOAT
+TotalSpend FLOAT
+AIE FLOAT
+
+program_spend
+--
+AUN INT PK FK >- pa_schools.AUN
+District VARCHAR(250) FK >- total_sd_spend.District
+County VARCHAR(100)
+Regular FLOAT
+Special FLOAT
+Vocational FLOAT
+Other FLOAT
+NonPublicSchool FLOAT
+AdultEd FLOAT
+HigherEd FLOAT
+PreK FLOAT
+
+support_serv_spend
+--
+AUN INT PK FK >- pa_schools.AUN
+District VARCHAR(250) FK >- total_sd_spend.District
+County VARCHAR(100)
+Students FLOAT
+InstructionalStaff FLOAT
+Administration FLOAT
+PupilHealth FLOAT
+Business FLOAT
+OperationPlant FLOAT
+StudentTransport FLOAT
+Central FLOAT
+Other FLOAT
+
+sd_revenue
+--
+AUN INT PK FK >- pa_schools.AUN
+District VARCHAR(250)
+County VARCHAR(100)
+ADM INT
+Total_Revenue FLOAT
+Total_Rank INT
+Local_Revenue FLOAT
+Local_Rank INT
+State_Revenue FLOAT
+State_Rank INT
+Fed_Revenue FLOAT
+Fed_Rank INT
+Other_Revenue FLOAT
+Other_Rank INT
