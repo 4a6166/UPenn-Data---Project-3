@@ -6,7 +6,7 @@ body {
   #map,
   body,
   html {
-    height: 95%;
+    height: 100%;
   }
   
   .leaflet-popup-content {
@@ -46,8 +46,24 @@ body {
   h1 {
     text-align: center;
   }
+
+  .flex {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+
+  #map {
+    position: relative;
+    float: right;
+    width: 80%; /* Adjust the width as needed */
+  }
   
-  #dropdown {
-    display: block !important;
-    margin: 20px !important;
+  .radio-buttons-container {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 20%; /* Adjust the width as needed */
   }

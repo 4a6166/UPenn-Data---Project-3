@@ -1,6 +1,6 @@
 // Creating the map object
 let myMap = L.map("map", {
-    center: [41.203323, -77.194527],
+    center: [41, -77.194527],
     zoom: 7
   });
   
@@ -10,7 +10,7 @@ let myMap = L.map("map", {
   }).addTo(myMap);
   
   // Load the GeoJSON data.
-  let geoData = "Resources/andrew.geojson";
+  let geoData = "../Resources/andrew.geojson";
   
   // Get the data with d3.
   d3.json(geoData).then(function(data) {
@@ -101,10 +101,12 @@ let myMap = L.map("map", {
     }
   
     // Dropdown change event listener
-    let dropdown = document.getElementById("dropdown");
-    dropdown.addEventListener("change", function() {
-      valueProperty = this.value;
-      updateMap(valueProperty);
+    let radioButtons = document.querySelectorAll('input[type="radio"]');
+    radioButtons.forEach((radio) => {
+      radio.addEventListener("change", function () {
+        valueProperty = this.id;
+        updateMap(valueProperty);
+      });
     });
   
     // Initial map generation
