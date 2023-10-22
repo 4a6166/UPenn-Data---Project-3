@@ -15,14 +15,17 @@ Clone this repo: `git clone https://github.com/4a6166/UPenn-Data---Project-3.git
 Run it by opening the program
 
 ### Database
-The schema charts are made with QuickDBD, which does not allow such a large combined view.
+The schema charts are made with [QuickDBD](https://app.quickdatabasediagrams.com/), which does not allow such a large combined view.
 Below are three PNGs with the schema and should be considered combined for query and reporting purposes.
 
 - Factors Schema
+
 ![Factors](./SQLiteDB/QuickDBD-factors.png)
 
 - Finance Schema
+
 ![Fiance](./SQLiteDB/QuickDBD-finance.png)
+
 
 - Scores Schema
 ![Scores](./SQLiteDB/QuickDBD-scores.png)
