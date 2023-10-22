@@ -1,0 +1,69 @@
+body {
+    padding: 0;
+    margin: 0;
+  }
+  
+  #chart,
+  body,
+  html {
+    height: 100%;
+  }
+  
+  .leaflet-popup-content {
+    text-align: center;
+  }
+  
+  /* CSS from the leaflet-choropleth documentation */
+  .legend {
+    color: #555;
+    padding: 6px 8px;
+    font: 12px Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    background: white;
+    background: rgba(255,255,255,0.8);
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    border-radius: 5px;
+  }
+  .legend ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    clear: both;
+  }
+  .legend li {
+    display: inline-block;
+    width: 30px;
+    height: 22px;
+  }
+  .legend .min {
+    float: left;
+    padding-bottom: 5px;
+  }
+  .legend .max {
+    float: right;
+  }
+  
+  h1 {
+    text-align: center;
+  }
+
+  .flex {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+
+  #chart {
+    position: relative;
+    float: right;
+    width: 80%; /* Adjust the width as needed */
+  }
+  
+  .radio-buttons-container {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 20%; /* Adjust the width as needed */
+  }
