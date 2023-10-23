@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PA Schools: Worth the Price?</title>
+  <link rel="icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
+
+  <!-- tailwind - css classes -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- project css -->
+  <link rel= "stylesheet" type= "text/css" href= "{{ css }}">
+</head>
+<body class=" h-screen
+                flex
+               flex-col
+               text-neutral-900 
+               bg-white
+               font-serif
+               ">
+  <div class=" w-screen
+                grow
+                flex
+                ">
+    <!-- left-hand navigation bar -->
+    <div class="w-1/10
+                 flex
+                 flex-col
+                 bg-sky-300
+                 ">
+      <nav class="
+                  grow
+                  flex
+                  flex-col
+                  p-4
+                  justify-between
+                  ">
+        <div class="invisible"></div>
+        <div class=" mx-auto
+                     flex
+                     flex-col
+                     items-center
+                     justify-between
+                     gap-10
+                     ">
+          <a href="/" >
+            <img class="m-auto" src="{{ url_for('static', filename='img/icons8-home-50.png') }}" />
+            <div class="text-center">Home</div>
+          </a>
+          <a href="/map">
+            <img class="m-auto" src="{{ url_for('static', filename='img/icons8-pennsylvania-50.png') }}" />
+            <div class="text-center">Map</div>
+          </a>
+          <a href="/scatter">
+            <img class="m-auto" src="{{ url_for('static', filename='img/icons8-scatter-plot-50.png') }}" />
+            <div class="text-center">Scatter</div>
+          </a>
+          <a href="/slope">
+            <img class="m-auto" src="{{ url_for('static', filename='img/icons8-options-50.png') }}" />
+            <div class="text-center">Slope</div>
+          </a>
+          <a href="/radar">
+            <img class="m-auto" src="{{ url_for('static', filename='img/icons8-radar-plot-50.png') }}" />
+            <div class="text-center">Radar</div>
+          </a>
+          <a href="/summary">
+            <img class="m-auto" src="{{ url_for('static', filename='img/icons8-radar-plot-50.png') }}" />
+            <div class="text-center">Summary</div>
+          </a>
+        </div>
+        <div class="flex-none">
+          <a href="https://github.com/4a6166/UPenn-Data---Project-3">
+            <img class="m-auto h-8 w-8"
+                 src="{{ url_for('static', filename='img/icons8-github.svg') }}"
+                 alt="Project Repository, Github" />
+          </a>
+        </div>
+      </nav>
+      <div class="text-[0.5rem]
+                         mx-auto
+                         ">
+        Icons by <a target="_blank" href="https://icons8.com">Icons8</a>
+      </div>
+    </div>
+    {% block content %}
+    <!-- flexbox to put charts inside -->
+    <div id="viz" class="w-full
+                          y-full
+                          flex
+                          ">
+      <div id="graphics" class="w-3/4 flex flex-col items-center justify-center">
+        <div id="chart" class="w-full h-full" style="background: transparent;"></div>
+        {{ controls | safe }}
+      </div>
+      <div id="commentary" class="w-1/4
+                                     p-4
+                                     flex
+                                     flex-col
+                                     justify-evenly
+                                     ">
+        <div id="notes">
+          {{ note | safe}}
+        </div>
+        <div id="attributions" class="text-xs">
+          {{ attribution | safe }}
+        </div>
+      </div>
+    </div>
+    {% endblock %}
+
+  </div>
+</body>
+
+<!-- CND Calls -->
+
+  <!-- D3 -->
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin="" />
+
+  <!-- Leaflet JavaScript code -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""></script>
+
+  <!-- Leaflet Choropleth -->
+  <script src="{{ url_for('static', filename='map/choropleth.js') }}"></script>
+
+  <!-- chartjs - alt charting system -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+  <!-- KNN cluserting algo -->
+  <!-- example: https://hackernoon.com/machine-learning-with-javascript-part-2-da994c17d483 -->
+  <script src="https://cdn.jsdelivr.net/npm/ml-knn@3.0.0/lib/index.min.js"></script>
+
+<!-- User Scripts -->
+
+  <!-- define vars passed by flask -->
+  <script type="text/javascript">
+    data = {{ data | tojson }};
+    console.log("Query results loaded");
+  </script>
+
+  <!-- user scripts in static folder-->
+  <script src="{{ js }}"></script>
+
+</html>

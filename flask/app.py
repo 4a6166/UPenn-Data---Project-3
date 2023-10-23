@@ -9,8 +9,8 @@ import json
 engine = create_engine("sqlite:///pa_school_district.db")
 Base = automap_base()
 Base.prepare(autoload_with=engine)
-print(Base.classes.keys())
 
+# TODO: should this be moved to open and close at each route?
 session = Session(engine)
 
 
@@ -44,7 +44,7 @@ def home():
         # results.append({"County": row[0], "AUN": row[1]})
 
     # render the dashboard template
-    return render_template("home.html", query_results=results)
+    return render_template("home.html", data=results)
 
 
 # calls the geojson file and passes it to a js var
@@ -54,20 +54,29 @@ def get_map():
     # css_file = url_for('static', filename='map/andrew.css')
     css_file = ""
     data = ''
-
     with open('static/map/andrew.geojson') as file:
         data = json.load(file)
 
-    note = """<p>Use this map to explore how your school district compares to its neighboring districts and to the state overall.
-        <p>Notice the clustering of Per Pupil Expenditure...
-        <p>We see generally see the highest per pupil expenditures in Pittsburgh and its surrounding suburbs, in the Philadelphia suburbs but not the city itself, in Indiana and the surrounding districts, and in the fringes of the northeast. We generally see the lowest per pupil expenditures throughout south-central PA and the heart of the northeast.
-        <p>However, we can see that academic Proficiency does not map directly onto these expenditure patterns by noticing how the geographical pattern of lowest per pupil expenditures \"disappears\" when viewing rates of Proficiency. One may expect that more money spent would result in better academic outcomes, but we are seeing that may not always be the case.
-        <p>For that reason, we want to explore how related expenditure is to academic proficiency in Pennsylvania. Click onto the Scatter plot to explore this question."""
+    note = '''
+        <p class="mb-3">Use this map to explore how your school district compares to its neighboring districts and to the state overall.
+        <p class="mb-3">Notice the clustering of Per Pupil Expenditure...
+        <p class="mb-3">We see generally see the highest per pupil expenditures in Pittsburgh and its surrounding suburbs, in the Philadelphia suburbs but not the city itself, in Indiana and the surrounding districts, and in the fringes of the northeast. We generally see the lowest per pupil expenditures throughout south-central PA and the heart of the northeast.
+        <p class="mb-3">However, we can see that academic Proficiency does not map directly onto these expenditure patterns by noticing how the geographical pattern of lowest per pupil expenditures \"disappears\" when viewing rates of Proficiency. One may expect that more money spent would result in better academic outcomes, but we are seeing that may not always be the case.
+        <p>For that reason, we want to explore how related expenditure is to academic proficiency in Pennsylvania. Click onto the Scatter plot to explore this question.
+           '''
 
-    attribution = '''<p>This is 2018-2019 data from the 
-    <a class="underline" href="https://www.education.pa.gov/DataAndReporting/Pages/default.aspx">Pennsylvania Department of Education</a>.
-    The Proficiency data is from the Keystone Exams, which replaced what many will know as the "PSSAs",
-    and are administered to 11th graders (with some exceptions for those with special needs).'''
+    attribution = '''
+        <p>This is 2018-2019 data from the
+           <a class="underline"
+              href="https://www.education.pa.gov/DataAndReporting/Pages/default.aspx"
+               >
+               Pennsylvania Department of Education
+           </a>.
+           The Proficiency data is from the Keystone Exams
+           which replaced what many will know as the "PSSAs",
+           and are administered to 11th graders
+           (with some exceptions for those with special needs).
+        '''
 
     controls = '''
         <!-- Code for tailwind radio buttons https://www.material-tailwind.com/docs/html/radio-button -->
@@ -195,9 +204,9 @@ def get_map():
             </label>
           </div>
         </div>
-    '''
+        '''
 
-    return render_template("vis.html", 
+    return render_template("vis.html",
                            js=js_file,
                            css=css_file,
                            controls=controls,
@@ -206,33 +215,65 @@ def get_map():
                            attribution=attribution)
 
 
-# @app.route("/scatter")
-# def get_scatter():
-#     js_file = url_for('static', filename='app.js')
-#     data="",
-#     note="Notes here"
-#     attribution="Attribution here"
-#     return render_template("vis.html", js=js_file, data=data, note=note, attribution=attribution)
+@app.route("/scatter")
+def get_scatter():
+    js_file = ""
+    css_file = ""
+    controls = ""
+    data = "",
+    note = "Notes here"
+    attribution = "Attribution here"
+
+    return render_template("vis2.html",
+                           js=js_file,
+                           css=css_file,
+                           controls=controls,
+                           data=data,
+                           note=note,
+                           attribution=attribution)
 
 
-# @app.route("/slope")
-# def get_slope():
-#     js_file = url_for('static', filename='app.js')
-#     data="",
-#     note="Notes here"
-#     attribution="Attribution here"
-#     return render_template("vis.html", js=js_file, data=data, note=note, attribution=attribution)
+@app.route("/slope")
+def get_slope():
+    js_file = ""
+    css_file = ""
+    controls = ""
+    data = "",
+    note = "Notes here"
+    attribution = "Attribution here"
+
+    return render_template("vis.html",
+                           js=js_file,
+                           css=css_file,
+                           controls=controls,
+                           data=data,
+                           note=note,
+                           attribution=attribution)
 
 
-# @app.route("/radar")
-# def get_radar():
-#     js_file = url_for('static', filename='app.js')
-#     data="",
-#     note="Notes here"
-#     attribution="Attribution here"
-#     return render_template("vis.html", js=js_file, data=data, note=note, attribution=attribution)
+@app.route("/radar")
+def get_radar():
+    js_file = ""
+    css_file = ""
+    controls = ""
+    data = "",
+    note = "Notes here"
+    attribution = "Attribution here"
+
+    return render_template("vis.html",
+                           js=js_file,
+                           css=css_file,
+                           controls=controls,
+                           data=data,
+                           note=note,
+                           attribution=attribution)
+
+
+@app.route("/summary")
+def get_summary():
+    return "Here is the summary"
+
 
 # set debugger
 if __name__ == "main":
     app.run(debug=True)
-

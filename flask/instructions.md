@@ -1,43 +1,56 @@
 ## Current State
-Right now, [app.py](./app.py) is the entry point for our flask app.
+[app.py](./app.py) is the entry point for our flask app.
 To start the app, run the following command from inside the `flask` directory:
 
 ```bash
 flask --app app.py --debug run
 ```
-
-The database that is in the folder right now, `./dbname.sqlite`, is a placeholder and should be deleted,
-but it auto populates from the boilerplate for creating the SQLAlchemy session.
+The database is copied over from the SQLite folder.
+It is the "production" database, and is where all the data will be pulled from and passed through to your HTML and JS files.
 
 ## Structure
 The app hook into the `templates` directory and the `static` directory.
+
 `static` holds CSS and Javascript files that will be statically served when the flask app is run.
+It also holds images and icons or whatever static files you want severed.
+
 `templates` holds HTML templates that will be populated with info and graphs from the database and our JS files.
 
-As Leaflet and D3 require class hooks, pass the following div IDs into your functions:
-- `map`
-- `scatter`
-- `radar`
-- `slope`
-
 ## Passing Data Through
-You will also need to access a JS object to get the data to manipulate.
-I think Flask will pass all the data in as `query_results`.
-Look in the [example JS file](./static/app.js) for an example of how the variable should be able to be accessed.
+Every visual is using the same base HTML template, `vis.html`.
+The Flask app uses a method called `render_template()` to pull the template and fill in placeholders.
+The placeholders look like this: `{{ data | tojson }}`.
+The first part of the placeholder is the variable that is being passed and the second is how it should be interpreted when being added to the HTML.
 
-I'm working on something that would allow dynamic querying via routines.
-That is what the second routine in  `app.py` is.
-If you want a button other input to run another query (for example, getting a different dataset to refresh the maps),
-I think we should be able to POST text,
-parse it into python variables,
-send that through SQLAlchemy,
-and return new data to the `query_results` variable.
-The downside looks like it would mean all tables would need to be refreshed.
-The upside might be that we could click `back` to get to a previous visualization.
-I don't know, still working this one out and will need to run some tests to see how it works.
+Below is an example of what full method call looks like:
+
+```python
+return render_template("vis.html", 
+                       js=js_file,
+                       css=css_file,
+                       controls=controls,
+                       data=data,
+                       note=note,
+                       attribution=attribution)
+```
+
+Here are how the variables are being used:
+
+| HTML/JS Var | Python Var  | Use |
+| ---         | ---         | --- |
+| js          | js_file     | Passes the location of the JS file containing your visualization
+| css         | css_file    | Passes the location of a CSS file you might need
+| controls    | controls    | HTML for the any controls you need to manipulate your visualizations, such as dropdowns or radio buttons
+| data        | data        | A variable passed to some JS in the HTML file, allows you to use the `data` var as if it was created by D3
+| note        | note        | The notes, in HTML form, that you want shown on the right of the visualization
+| attribution | attribution | The attribution or footnotes, in HTML, you want shown to the bottom right of the visualization
+
 
 ## Design
-I'm using [TailwindCSS](https://tailwindcss.com) for styling.
+Use [TailwindCSS](https://tailwindcss.com) for styling.
 It uses utility classes, so you can style your elements however you want using it and they should all play nice with everyone else's.
-I'm fine with switching back to [Bootstrap](https://getbootstrap.com) if anyone has an opinion one way or another.
-I think Tailwind might be more modern (Bootstrap was originally created by Twitter and is now maintained by Github).
+To add a style to your HTML, add a codes from Tailwind as classes in the raw HTML.
+
+**Use Tailwind Classes before trying to use plain CSS files.**
+
+This reduces some complexity, and the resulting compatibility issues, that occurs when populating the templates.
