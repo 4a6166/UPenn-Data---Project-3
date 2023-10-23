@@ -93,6 +93,14 @@ Twelfth INT
 HS_Total INT
 SD_Total INT
 
+taxes
+--
+District VARCHAR(250)
+AUN INT PK FK >- pa_schools.AUN
+County VARCHAR(100)
+City VARCHAR(100)
+Rate Float
+
 
 QDB 3:
 
