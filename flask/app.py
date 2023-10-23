@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify, url_for  # Lesson 10-3
+from flask import Flask, request, render_template, jsonify, url_for  # Lesson 10-3
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 from sqlalchemy.ext.automap import automap_base
@@ -24,12 +24,19 @@ app = Flask(__name__,
             template_folder='templates')
 
 
-# set up primary/only route
-@app.route("/")
-def home():
-    # log to console that route connected
-    print("App running")
+######################################################################
+# Serves the API
+######################################################################
+# if you go to "/api/getStats?stat=abc" the following is served: "abc"
+@app.route("/api/getStats", methods=['GET'])
+def get_api():
+    results = request.args.get('stat', None)
+    return jsonify(results)
 
+
+# Basic SQL query example
+@app.route("/api/example", methods=['GET'])
+def example():
     results = []
     table = session.query(Base.classes.pa_schools.County,
                           Base.classes.pa_schools.AUN,
@@ -41,10 +48,17 @@ def home():
         for cell in row:
             r.append(cell)
         results.append(r)
-        # results.append({"County": row[0], "AUN": row[1]})
 
+    return jsonify(results)
+
+
+######################################################################
+# Serves the webpages
+######################################################################
+@app.route("/")
+def home():
     # render the dashboard template
-    return render_template("home.html", data=results)
+    return render_template("home.html", data="")
 
 
 # calls the geojson file and passes it to a js var
@@ -224,7 +238,7 @@ def get_scatter():
     note = "Notes here"
     attribution = "Attribution here"
 
-    return render_template("vis2.html",
+    return render_template("vis.html",
                            js=js_file,
                            css=css_file,
                            controls=controls,
@@ -271,7 +285,7 @@ def get_radar():
 
 @app.route("/summary")
 def get_summary():
-    return "Here is the summary"
+    return render_template("summary.html", data="")
 
 
 # set debugger
