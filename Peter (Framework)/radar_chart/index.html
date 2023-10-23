@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radar and Gauge Charts</title>
+    <link rel="stylesheet" href="style.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Signika+Negative:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="search-bar">
+            <input type="text" id="schoolSearch" placeholder="Search for a school (ex: 'School_Name-District_Name')"/>
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <i class="fa-solid fa-xmark"></i>
+        </div>
+        <div class="chart-container">
+            <div class="radar-chart-container">
+                <canvas id="myRadarChart"></canvas>
+            </div>
+            <div class="gauge-chart-container">
+                <div id="gaugeChart"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Necessary JavaScript libraries are imported -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+    <!-- Your JavaScript files -->
+    <script src="logic.js"></script>
+    <script src="listener.js"></script>
+</body>
+</html>
