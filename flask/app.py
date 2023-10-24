@@ -51,6 +51,7 @@ def get_api():
 def get_map_api():
     view = request.args.get('view', None)
 
+    
     results = []
 
     if view==None:
@@ -62,7 +63,7 @@ def get_map_api():
                               Base.classes.person_spend.LocalPupil,
                               Base.classes.person_spend.StatePupil,
                               Base.classes.person_spend.FedPupil
-                              )
+                              ).group_by(Base.classes.person_spend.AUN)
 
         for row in query:
             r = {
@@ -76,15 +77,23 @@ def get_map_api():
     elif view=="alg":
         query=session.query(
                            Base.classes.keystone_algebra.AUN,
-                           Base.classes.keystone_algebra.Advanced,
-                           Base.classes.keystone_algebra.Proficient
-                           )
+                           func.avg(Base.classes.keystone_algebra.Advanced),
+                           func.avg(Base.classes.keystone_algebra.Proficient),
+                           func.sum(Base.classes.keystone_algebra.NumberScored),
+                           func.sum(Base.classes.keystone_algebra.Advanced + Base.classes.keystone_algebra.Proficient),
+                           Base.classes.pa_schools.District
+                           ).join(Base.classes.pa_schools,
+                                  Base.classes.keystone_algebra.AUN==Base.classes.pa_schools.AUN
+                           ).group_by(Base.classes.keystone_algebra.AUN)
 
         for row in query:
             r = {
                     'AUN': row[0],
+                    'District': row[5],
                     'Advanced': row[1],
-                    'Proficient': row[2]
+                    'Proficient': row[2],
+                    'NumberScored': row[3],
+                    'Passing': row[4]
                 }
             results.append(r)
     elif view=="bio":
