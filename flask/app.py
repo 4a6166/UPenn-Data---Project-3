@@ -431,7 +431,6 @@ def get_scatter():
                            attribution=attribution)
 
 
-
 @app.route("/slope")
 def get_slope():
     js_file = url_for('static', filename='slope/slope.js')
@@ -488,11 +487,11 @@ def get_radar():
                 <i class="fa-solid fa-magnifying-glass"></i>
                 <i class="fa-solid fa-xmark"></i>
             </div>
-            <div class="chart-container">
-                <div class="radar-chart-container">
+            <div class="flex w-full">
+                <div class="radar-chart-container w-1/2">
                     <canvas id="myRadarChart"></canvas>
                 </div>
-                <div class="gauge-chart-container">
+                <div class="gauge-chart-container w-1/2">
                     <div id="gaugeChart"></div>
                 </div>
             </div>
