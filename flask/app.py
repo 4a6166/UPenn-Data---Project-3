@@ -359,20 +359,136 @@ def get_map():
 
 @app.route("/scatter")
 def get_scatter():
-    js_file = ""
-    css_file = ""
-    controls = ""
-    data = "",
-    note = "Notes here"
-    attribution = "Attribution here"
+    js_file = url_for('static', filename='scatter/scatter.js')
+    css_file = url_for('static', filename='map/andrew.css')
+    controls = '''
+        <!-- Code for tailwind radio buttons https://www.material-tailwind.com/docs/html/radio-button -->
+        <div id="andrew" class="flex gap-10 radio-buttons-container">
+          <div <h1>Select a Metric to View</h1></div>
+          <div class="inline-flex items-center">
+            <label
+              class="relative flex cursor-pointer items-center rounded-full p-3 text-indigo-700 border-indigo-700"
+              for="alg"
+              data-ripple-dark="true"
+            >
+              <input
+                id="alg"
+                name="type"
+                type="radio"
+                class="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-full border border-blue-gray-200 text-indigo-700 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-indigo-700 hover:before:bg-indigo-700 hover:before:opacity-10"
+                checked
+              />
+              <div class="pointer-events-none absolute top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 text-indigo-700 opacity-0 transition-opacity peer-checked:opacity-100">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-3.5 w-3.5"
+                  viewBox="0 0 16 16"
+                  fill="currentColor"
+                >
+                  <circle data-name="ellipse" cx="8" cy="8" r="8"></circle>
+                </svg>
+              </div>
+            </label>
+            <label
+              class="mt-px cursor-pointer select-none font-light text-gray-700"
+              for="alg"
+            >
+              Algebra Proficiency
+            </label>
+          </div>
+          <div class="inline-flex items-center">
+            <label
+              class="relative flex cursor-pointer items-center rounded-full p-3 text-fuchsia-800 border-fuchsia-800"
+              for="lit"
+              data-ripple-dark="true"
+            >
+              <input
+                id="lit"
+                name="type"
+                type="radio"
+                class="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-full border border-blue-gray-200 text-fuchsia-800 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-fuchsia-800 hover:before:bg-fuchsia-800 hover:before:opacity-10"
+              />
+              <div class="pointer-events-none absolute top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 text-fuchsia-800 opacity-0 transition-opacity peer-checked:opacity-100">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-3.5 w-3.5"
+                  viewBox="0 0 16 16"
+                  fill="currentColor"
+                >
+                  <circle data-name="ellipse" cx="8" cy="8" r="8"></circle>
+                </svg>
+              </div>
+            </label>
+            <label
+              class="mt-px cursor-pointer select-none font-light text-gray-700"
+              for="lit"
+            >
+              Literature Proficiency
+            </label>
+          </div>
+          <div class="inline-flex items-center">
+            <label
+              class="relative flex cursor-pointer items-center rounded-full p-3 text-green-800 border-green-800"
+              for="bio"
+              data-ripple-dark="true"
+            >
+              <input
+                id="bio"
+                name="type"
+                type="radio"
+                class="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-full border border-blue-gray-200 text-green-800 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-green-800 hover:before:bg-green-800 hover:before:opacity-10"
+              />
+              <div class="pointer-events-none absolute top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 text-green-800 opacity-0 transition-opacity peer-checked:opacity-100">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-3.5 w-3.5"
+                  viewBox="0 0 16 16"
+                  fill="currentColor"
+                >
+                  <circle data-name="ellipse" cx="8" cy="8" r="8"></circle>
+                </svg>
+              </div>
+            </label>
+            <label
+              class="mt-px cursor-pointer select-none font-light text-gray-700"
+              for="bio"
+            >
+              Biology Proficiency
+            </label>
+          </div>
+        </div>
+        '''
+    
+    note = '''
+        <p class="mb-3">Use this map to explore how your school district compares to its neighboring districts and to the state overall.
+        <p class="mb-3">Notice the clustering of Per Pupil Expenditure...
+        <p class="mb-3">We see generally see the highest per pupil expenditures in Pittsburgh and its surrounding suburbs, in the Philadelphia suburbs but not the city itself, in Indiana and the surrounding districts, and in the fringes of the northeast. We generally see the lowest per pupil expenditures throughout south-central PA and the heart of the northeast.
+        <p class="mb-3">However, we can see that academic Proficiency does not map directly onto these expenditure patterns by noticing how the geographical pattern of lowest per pupil expenditures \"disappears\" when viewing rates of Proficiency. One may expect that more money spent would result in better academic outcomes, but we are seeing that may not always be the case.
+        <p>For that reason, we want to explore how related expenditure is to academic proficiency in Pennsylvania. Click onto the Scatter plot to explore this question.
+           '''
 
+    attribution = '''
+        <p>This is 2018-2019 data from the
+           <a class="underline"
+              href="https://www.education.pa.gov/DataAndReporting/Pages/default.aspx"
+               >
+               Pennsylvania Department of Education
+           </a>.
+           The Proficiency data is from the Keystone Exams
+           which replaced what many will know as the "PSSAs",
+           and are administered to 11th graders
+           (with some exceptions for those with special needs).
+        '''
+
+    
     return render_template("vis.html",
                            js=js_file,
                            css=css_file,
                            controls=controls,
-                           data=data,
+                           data="",
                            note=note,
                            attribution=attribution)
+
 
 
 @app.route("/slope")
