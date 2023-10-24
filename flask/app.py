@@ -99,6 +99,22 @@ def get_map_api():
 
 
 # API for scatter plots
+@app.route("/api/scatter/pupil")
+def get_scatter_pupil():
+    results = []
+    query = session.query(Base.classes.person_spend.AUN,
+                          Base.classes.person_spend.LocalPupil,
+                          Base.classes.person_spend.StatePupil,
+                          Base.classes.person_spend.FedPupil
+                          ).filter(Base.classes.person_spend.AUN != "103022253"
+                                   ).group_by(Base.classes.person_spend.AUN).order_by(Base.classes.person_spend.AUN.desc())
+
+    for row in query:
+        results.append(row[1]+row[2]+row[3])
+
+    return jsonify(results)
+
+
 @app.route("/api/scatter", methods=['GET'])
 def get_scatter_api():
     view = request.args.get('view', None)

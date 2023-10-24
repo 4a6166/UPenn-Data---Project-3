@@ -1,24 +1,19 @@
-<<<<<<< Updated upstream
-
 
 let total = getTotals()
 
 
 function getTotals(){
-    // d3.json('urlfortotals')
-    return [1, 2, 3, 4]    
+    d3.json('/api/scatter/pupil').then( (d) => {
+      return d    
+    })
 }
 
 
 function plotSelectedProficiencies(fieldName) {
   let subjectData = []
-  if (fieldName === 'alg') subjectData = [1, 2, 3, 4]
-  if (fieldName === 'bio') subjectData = [2, 4, 6, 8]
-  if (fieldName === 'lit') subjectData = [.1, .2, .3, .4]
-
-  // if (fieldName === 'alg') subjectData = d3.json('urlforalg')
-  // if (fieldName === 'bio') subjectData = d3.json('urlforbio')
-  // if (fieldName === 'lit') subjectData = d3.json('urlforlit')
+  if (fieldName === 'alg') subjectData = d3.json('/api/scatter?view=keystone_algebra')
+  if (fieldName === 'bio') subjectData = d3.json('/api/scatter?view=keystone_biology')
+  if (fieldName === 'lit') subjectData = d3.json('/api/scatter?view=keystone_literature')
 
   var data = {
     x: total,
@@ -44,11 +39,11 @@ function plotSelectedProficiencies(fieldName) {
 plotSelectedProficiencies('alg')
 
  
-=======
-const algebraContainer = document.getElementById('algebra')
-const bioContainer = document.getElementById('bio')
-const litContainer = document.getElementById('lit')
-algebraContainer.innerHTML={algebra} 
-bioContainer.innerHTML={bio} 
-litContainer.innerHTML={lit} 
->>>>>>> Stashed changes
+// =======
+// const algebraContainer = document.getElementById('algebra')
+// const bioContainer = document.getElementById('bio')
+// const litContainer = document.getElementById('lit')
+// algebraContainer.innerHTML={algebra} 
+// bioContainer.innerHTML={bio} 
+// litContainer.innerHTML={lit} 
+// >>>>>>> Stashed changes
