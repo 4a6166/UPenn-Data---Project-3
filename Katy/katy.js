@@ -1,13 +1,5 @@
 // Load the Top 25 data
-let finalRank = "../Resources/compare_ranks.json";
-
-// Load the data for our final rankings
-let finalRank = "../Resources/final_rank.json"
-
-// Get the data with d3
-d3.json(topRank).then(function(data) {
-    console.log(data)
-});
+let finalRank = "../Katy/compare_ranks.json";
 
 d3.json(finalRank).then(function(data) {
     console.log(data)
@@ -17,19 +9,17 @@ d3.json(finalRank).then(function(data) {
 var chart, 
   palette = ['#1b4289', '#d0d0d0']; 
 var selectEl; 
-var data1 = [ {rank: "Rank", district: data.}
+var data = [{district: "District Name", rank: "Rank", value: "Value Ranking"}]; 
   
-]; 
-  
-var leftCategories = JSC.sortBy(data, 'W_20_21') 
+var leftCategories = JSC.sortBy(data, 'Rank') 
     .reverse() 
     .map(function(v) { 
-      return v.team; 
+      return v.district; 
     }), 
-  rightCategories = JSC.sortBy(data, 'W_21_22') 
+  rightCategories = JSC.sortBy(data, 'Value Ranking') 
     .reverse() 
     .map(function(v) { 
-      return v.team; 
+      return v.district; 
     }); 
   
 var series = getSeries(data); 
@@ -37,7 +27,7 @@ bindUi();
 populateDropdown(series); 
   
 chart = JSC.Chart( 
-  'chartDiv1', 
+  'chart', 
   { 
     debug: true, 
     animation_duration: 0, 
@@ -112,29 +102,29 @@ chart = JSC.Chart(
   }, 
   function(c) { 
     chart = c; 
-    dropdownSelect('Phoenix Suns'); 
-    highlightSeries('Phoenix Suns'); 
+    dropdownSelect('RADNOR TOWNSHIP SD'); 
+    highlightSeries('RADNOR TOWNSHIP SD'); 
   } 
 ); 
   
 function getSeries(data) { 
   return data.map(function(v) { 
-    var team = v.team; 
-    (leftI = leftCategories.indexOf(team)), 
-      (rightI = rightCategories.indexOf(team)); 
+    var district = v.district; 
+    (leftI = leftCategories.indexOf(district)), 
+      (rightI = rightCategories.indexOf(district)); 
     return { 
-      name: team, 
+      name: district, 
       color: palette[1], 
       points: [ 
         { 
-          x: '2020-2021 Season', 
+          x: 'Rank', 
           y: leftI, 
-          z: v['W_20_21'] 
+          z: v['Rank'] 
         }, 
         { 
-          x: '2021-2022 Season', 
+          x: 'Value Ranking', 
           y: rightI, 
-          z: v['W_21_22'] 
+          z: v['Value Ranking'] 
         } 
       ] 
     }; 
@@ -166,7 +156,7 @@ function highlightSeries(id) {
   
 function bindUi() { 
   selectEl = document.getElementById( 
-    'selectTeam'
+    'selectDistrict'
   ); 
   selectEl.addEventListener('change', function() { 
     selectChanged(this); 
