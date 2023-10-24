@@ -1,39 +1,40 @@
+console.log("ScatterJS loaded")
 
-let total = getTotals()
+// let total = getTotals()
 
+let result
+d3.json('/api/scatter?view=alg').then( (d) => {
+  result = d
+})
 
-function getTotals(){
-    d3.json('/api/scatter/pupil').then( (d) => {
-      return d    
-    })
+let total
+d3.json('/api/pupil').then( (d2) => {
+  total = d2
+})
+
+function plotSelectedProficiencies(view) {
+  d3.json(`api/scatter?view=${view}`).then( (d) => { 
+    var data = {
+      x: total,
+      y: d,
+      mode: 'markers',
+      type: 'scatter'
+    };
+
+    Plotly.newPlot('chart', [data]);
+   })
 }
 
 
-function plotSelectedProficiencies(fieldName) {
-  let subjectData = []
-  if (fieldName === 'alg') subjectData = d3.json('/api/scatter?view=keystone_algebra')
-  if (fieldName === 'bio') subjectData = d3.json('/api/scatter?view=keystone_biology')
-  if (fieldName === 'lit') subjectData = d3.json('/api/scatter?view=keystone_literature')
 
-  var data = {
-    x: total,
-    y: subjectData,
-    mode: 'markers',
-    type: 'scatter'
-  };
-  
-  Plotly.newPlot('chart', [data]);
-  console.log('asdf')
-}
-
-    // Dropdown change event listener
-    let radioButtons = document.querySelectorAll('input[type="radio"]');
-    radioButtons.forEach((radio) => {
-      radio.addEventListener("change", function () {
-        valueProperty = this.id;
-        plotSelectedProficiencies(valueProperty);
-      });
-    });
+// Dropdown change event listener
+let radioButtons = document.querySelectorAll('input[type="radio"]');
+radioButtons.forEach((radio) => {
+  radio.addEventListener("change", function () {
+    valueProperty = this.id;
+    plotSelectedProficiencies(valueProperty);
+  });
+});
 
 
 plotSelectedProficiencies('alg')

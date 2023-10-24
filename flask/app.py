@@ -15,7 +15,6 @@ Base = automap_base()
 Base.prepare(autoload_with=engine)
 
 # TODO: should this be moved to open and close at each route?
-session = Session(engine)
 
 
 ######################################################################
@@ -34,6 +33,7 @@ app = Flask(__name__,
 # API for map views
 @app.route("/api/map", methods=['GET'])
 def get_map_api():
+    session = Session(engine)
     view = request.args.get('view', None)
 
     # return list of dicst with AUN, District, Advanced, Proficient, NumeberScored, and Total (Advanced + Proficient)
@@ -95,47 +95,62 @@ def get_map_api():
     else:
         results = "Call pupil, alg, bio, or lit."
 
+    session.close()
     return jsonify(results)
 
 
 # API for scatter plots
-@app.route("/api/scatter/pupil")
+@app.route("/api/scatter", methods=['GET'])
+def get_scatter_api():
+    session = Session(engine)
+    view = request.args.get('view', None)
+    results = []
+
+    s =''
+    if view == 'alg':
+        s='keystone_algebra'
+    elif view == 'bio':
+        s ='keystone_biology'
+    elif view == 'lit':
+        s='keystone_literature'
+
+    query = session.query(
+            func.avg(Base.classes[s].Proficient)
+            ).join(Base.classes.person_spend,
+                   Base.classes.person_spend.AUN == Base.classes[s].AUN
+            ).group_by(Base.classes[s].AUN
+            ).order_by(Base.classes.person_spend.AUN.desc())
+
+    for row in query:
+        results.append(row[0])
+
+    session.close()
+    return jsonify(results)
+
+
+@app.route("/api/pupil")
 def get_scatter_pupil():
+    session = Session(engine)
     results = []
     query = session.query(Base.classes.person_spend.AUN,
                           Base.classes.person_spend.LocalPupil,
                           Base.classes.person_spend.StatePupil,
                           Base.classes.person_spend.FedPupil
                           ).filter(Base.classes.person_spend.AUN != "103022253"
-                                   ).group_by(Base.classes.person_spend.AUN).order_by(Base.classes.person_spend.AUN.desc())
+                          ).group_by(Base.classes.person_spend.AUN
+                          ).order_by(Base.classes.person_spend.AUN.desc())
 
     for row in query:
         results.append(row[1]+row[2]+row[3])
 
-    return jsonify(results)
-
-
-@app.route("/api/scatter", methods=['GET'])
-def get_scatter_api():
-    view = request.args.get('view', None)
-    results = []
-
-    query = session.query(
-            func.avg(Base.classes[view].Proficient)
-            ).join(Base.classes.person_spend,
-                   Base.classes.person_spend.AUN == Base.classes[view].AUN
-            ).group_by(Base.classes[view].AUN
-            ).order_by(Base.classes.person_spend.AUN.desc())
-
-    for row in query:
-        results.append(row[0])
-
+    session.close()
     return jsonify(results)
 
 
 # API for slope
 @app.route("/api/slope", methods=['GET'])
 def get_slope_api():
+    session = Session(engine)
     results = {}
 
     bio_prof = session.query(Base.classes.pa_schools.SchoolNumber,
@@ -176,6 +191,7 @@ def get_slope_api():
             r.append(cell)
         results["lit_prof"].append(r)
 
+    session.close()
     return jsonify(results)
 
 
@@ -188,6 +204,7 @@ def get_radar_api():
 # Basic SQL query example
 @app.route("/api/example", methods=['GET'])
 def example():
+    session = Session(engine)
     results = []
     table = session.query(Base.classes.pa_schools.County,
                           Base.classes.pa_schools.AUN,
@@ -383,127 +400,28 @@ def get_map():
 @app.route("/scatter")
 def get_scatter():
     js_file = url_for('static', filename='scatter/scatter.js')
-    css_file = url_for('static', filename='map/andrew.css')
+    css_file = ""
     controls = '''
-        <!-- Code for tailwind radio buttons https://www.material-tailwind.com/docs/html/radio-button -->
-        <div id="andrew" class="flex gap-10 radio-buttons-container">
-          <div <h1>Select a Metric to View</h1></div>
-          <div class="inline-flex items-center">
-            <label
-              class="relative flex cursor-pointer items-center rounded-full p-3 text-indigo-700 border-indigo-700"
-              for="alg"
-              data-ripple-dark="true"
-            >
-              <input
-                id="alg"
-                name="type"
-                type="radio"
-                class="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-full border border-blue-gray-200 text-indigo-700 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-indigo-700 hover:before:bg-indigo-700 hover:before:opacity-10"
-                checked
-              />
-              <div class="pointer-events-none absolute top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 text-indigo-700 opacity-0 transition-opacity peer-checked:opacity-100">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-3.5 w-3.5"
-                  viewBox="0 0 16 16"
-                  fill="currentColor"
-                >
-                  <circle data-name="ellipse" cx="8" cy="8" r="8"></circle>
-                </svg>
-              </div>
-            </label>
-            <label
-              class="mt-px cursor-pointer select-none font-light text-gray-700"
-              for="alg"
-            >
-              Algebra Proficiency
-            </label>
-          </div>
-          <div class="inline-flex items-center">
-            <label
-              class="relative flex cursor-pointer items-center rounded-full p-3 text-fuchsia-800 border-fuchsia-800"
-              for="lit"
-              data-ripple-dark="true"
-            >
-              <input
-                id="lit"
-                name="type"
-                type="radio"
-                class="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-full border border-blue-gray-200 text-fuchsia-800 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-fuchsia-800 hover:before:bg-fuchsia-800 hover:before:opacity-10"
-              />
-              <div class="pointer-events-none absolute top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 text-fuchsia-800 opacity-0 transition-opacity peer-checked:opacity-100">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-3.5 w-3.5"
-                  viewBox="0 0 16 16"
-                  fill="currentColor"
-                >
-                  <circle data-name="ellipse" cx="8" cy="8" r="8"></circle>
-                </svg>
-              </div>
-            </label>
-            <label
-              class="mt-px cursor-pointer select-none font-light text-gray-700"
-              for="lit"
-            >
-              Literature Proficiency
-            </label>
-          </div>
-          <div class="inline-flex items-center">
-            <label
-              class="relative flex cursor-pointer items-center rounded-full p-3 text-green-800 border-green-800"
-              for="bio"
-              data-ripple-dark="true"
-            >
-              <input
-                id="bio"
-                name="type"
-                type="radio"
-                class="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-full border border-blue-gray-200 text-green-800 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-green-800 hover:before:bg-green-800 hover:before:opacity-10"
-              />
-              <div class="pointer-events-none absolute top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 text-green-800 opacity-0 transition-opacity peer-checked:opacity-100">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-3.5 w-3.5"
-                  viewBox="0 0 16 16"
-                  fill="currentColor"
-                >
-                  <circle data-name="ellipse" cx="8" cy="8" r="8"></circle>
-                </svg>
-              </div>
-            </label>
-            <label
-              class="mt-px cursor-pointer select-none font-light text-gray-700"
-              for="bio"
-            >
-              Biology Proficiency
-            </label>
-          </div>
-        </div>
-        '''
-    
-    note = '''
-        <p class="mb-3">Use this map to explore how your school district compares to its neighboring districts and to the state overall.
-        <p class="mb-3">Notice the clustering of Per Pupil Expenditure...
-        <p class="mb-3">We see generally see the highest per pupil expenditures in Pittsburgh and its surrounding suburbs, in the Philadelphia suburbs but not the city itself, in Indiana and the surrounding districts, and in the fringes of the northeast. We generally see the lowest per pupil expenditures throughout south-central PA and the heart of the northeast.
-        <p class="mb-3">However, we can see that academic Proficiency does not map directly onto these expenditure patterns by noticing how the geographical pattern of lowest per pupil expenditures \"disappears\" when viewing rates of Proficiency. One may expect that more money spent would result in better academic outcomes, but we are seeing that may not always be the case.
-        <p>For that reason, we want to explore how related expenditure is to academic proficiency in Pennsylvania. Click onto the Scatter plot to explore this question.
-           '''
+        <fieldset>
+            <div>
+                <input type="radio" id="alg" checked></input>
+                <label for="alg">Algebra</label>
+            </div>
+            <div>
+                <input type="radio" id="bio"></input>
+                <label for="bio">Biology</label>
+            </div>
+            <div>
+                <input type="radio" id="lit"></input>
+                <label for="lit">Literature</label>
+            </div>
+        </fieldset>
+    '''
 
-    attribution = '''
-        <p>This is 2018-2019 data from the
-           <a class="underline"
-              href="https://www.education.pa.gov/DataAndReporting/Pages/default.aspx"
-               >
-               Pennsylvania Department of Education
-           </a>.
-           The Proficiency data is from the Keystone Exams
-           which replaced what many will know as the "PSSAs",
-           and are administered to 11th graders
-           (with some exceptions for those with special needs).
-        '''
+    note = 'Here are scatter plots showing the relationship between expense and performance across three categories.'
 
-    
+    attribution = ''
+
     return render_template("vis.html",
                            js=js_file,
                            css=css_file,
