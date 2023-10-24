@@ -70,6 +70,7 @@ def get_map_api():
                               Base.classes.person_spend.LocalPupil,
                               Base.classes.person_spend.StatePupil,
                               Base.classes.person_spend.FedPupil
+                              ).filter(Base.classes.person_spend.AUN != "103022253"
                               ).group_by(Base.classes.person_spend.AUN)
 
         for row in query:
