@@ -1,5 +1,5 @@
 // Set the relative file path here.
-var filePath = '../Resources/keystone_expenditure.json';
+var filePath = '../Resources/Output/keystone_expenditure.json';
 
 let radarChartData = {};
 let gaugeChartData = {};
