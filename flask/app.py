@@ -199,8 +199,7 @@ def home():
 @app.route("/map")
 def get_map():
     js_file = url_for('static', filename='map/andrew2.js')
-    # css_file = url_for('static', filename='map/andrew.css')
-    css_file = ""
+    css_file = url_for('static', filename='map/andrew.css')
     data = ''
     with open('static/map/Pennsylvania_School_Districts_Boundaries.geojson') as file:
         data = json.load(file)
@@ -228,7 +227,7 @@ def get_map():
 
     controls = '''
         <!-- Code for tailwind radio buttons https://www.material-tailwind.com/docs/html/radio-button -->
-        <div class="flex gap-10 radio-buttons-container">
+        <div id="andrew" class="flex gap-10 radio-buttons-container">
           <div <h1>Select a Metric to View</h1></div>
           <div class="inline-flex items-center">
             <label

@@ -1,15 +1,4 @@
-body {
-    padding: 0;
-    margin: 0;
-  }
-  
-  #chart,
-  body,
-  html {
-    height: 100%;
-  }
-  
-  .leaflet-popup-content {
+  #andrew .leaflet-popup-content {
     text-align: center;
   }
   
@@ -43,24 +32,24 @@ body {
     float: right;
   }
   
-  h1 {
+  #andrew h1 {
     text-align: center;
   }
 
-  .flex {
+  #andrew .flex {
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
   }
 
-  #chart {
+  #andrew #chart {
     position: relative;
     float: right;
     width: 80%; /* Adjust the width as needed */
   }
   
-  .radio-buttons-container {
+  #andrew .radio-buttons-container {
     position: absolute;
     top: 0;
     bottom: 0;
