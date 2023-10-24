@@ -62,41 +62,41 @@ d3.json("/api/map?view=lit").then( (d) => {
       updateLegend(geojson, valueProp, scale);
     }
   
-      // Set up the legend.
-    function updateLegend(geojson, valueProp, scale) {
-        legend = L.control({ position: "bottomright" });
-        legend.onAdd = function() {
-          let div = L.DomUtil.create("div", "info legend");
-          let limits = geojson.options.limits;
-          let colors = geojson.options.colors;
-          let labels = [];
-      
-          let legendTitle;
-          if (valueProp === "pupil_expend") {
-            legendTitle = "Per Pupil Expenditure"; // Legend title for pupil_expend
-          } else if (valueProp === "algebra") {
-            legendTitle = "Percent Proficient in Algebra"; // Legend title for algebra
-          } else if (valueProp === "literature") {
-            legendTitle = "Percent Proficient in Literature"; // Legend title for literature
-          } else if (valueProp === "biology") {
-            legendTitle = "Percent Proficient in Biology"; // Legend title for biology
-          }
-  
-          // Add the legend heading and minimum and maximum.
-          let legendInfo = "<h1>" + legendTitle + "</h1>" +
-          "<div class=\"labels\">" +
-          "<div class=\"min\">" + limits[0] + "</div>" +
-          "<div class=\"max\">" + limits[limits.length - 1] + "</div>" +
-          "</div>";
-  
-          div.innerHTML = legendInfo;
-  
-          limits.forEach(function(limit, index) {
-            labels.push("<li style=\"background-color: " + colors[index] + "\"></li>");
-          });
-  
-        div.innerHTML += "<ul>" + labels.join("") + "</ul>";
-        return div;
+  // Set up the legend.
+  function updateLegend(geojson, valueProp, scale) {
+    legend = L.control({ position: "bottomright" });
+    legend.onAdd = function() {
+      let div = L.DomUtil.create("div", "info legend");
+      let limits = geojson.options.limits;
+      let colors = geojson.options.colors;
+      let labels = [];
+
+      let legendTitle;
+      if (valueProp === "pupil_expend") {
+        legendTitle = "Per Pupil Expenditure"; // Legend title for pupil_expend
+      } else if (valueProp === "algebra") {
+        legendTitle = "Percent Proficient in Algebra"; // Legend title for algebra
+      } else if (valueProp === "literature") {
+        legendTitle = "Percent Proficient in Literature"; // Legend title for literature
+      } else if (valueProp === "biology") {
+        legendTitle = "Percent Proficient in Biology"; // Legend title for biology
+      }
+
+      // Add the legend heading and minimum and maximum.
+      let legendInfo = "<h1>" + legendTitle + "</h1>" +
+        "<div class=\"labels\">" +
+        "<div class=\"min\">" + limits[0] + "</div>" +
+        "<div class=\"max\">" + limits[limits.length - 1] + "</div>" +
+        "</div>";
+
+      div.innerHTML = legendInfo;
+
+      limits.forEach(function(limit, index) {
+        labels.push("<li style=\"background-color: " + colors[index] + "\"></li>");
+      });
+
+      div.innerHTML += "<ul>" + labels.join("") + "</ul>";
+      return div;
       };
   
       // Adding the legend to the map

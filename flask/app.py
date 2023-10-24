@@ -32,19 +32,22 @@ app = Flask(__name__,
 def get_map_api():
     view = request.args.get('view', None)
 
-    # return list of dicst with AUN, District, Advanced, Proficient, NumeberScored, and Passing (Advanced + Proficient)
+    # return list of dicst with AUN, District, Advanced, Proficient, NumeberScored, and Total (Advanced + Proficient)
     def query_scores(s):
-        result=[]
+        result = []
 
-        query=session.query(
-                           Base.classes.keystone_algebra.AUN,
+        query = session.query(
+                           Base.classes[s].AUN,
                            func.avg(Base.classes[s].Advanced),
                            func.avg(Base.classes[s].Proficient),
                            func.sum(Base.classes[s].NumberScored),
-                           func.sum(Base.classes[s].Advanced + Base.classes[s].Proficient),
+                           func.avg(
+                               (Base.classes[s].Advanced) + 
+                               (Base.classes[s].Proficient)
+                               ),
                            Base.classes.pa_schools.District
                            ).join(Base.classes.pa_schools,
-                                  Base.classes[s].AUN==Base.classes.pa_schools.AUN
+                                  Base.classes[s].AUN == Base.classes.pa_schools.AUN
                            ).group_by(Base.classes[s].AUN)
 
         for row in query:
@@ -54,7 +57,7 @@ def get_map_api():
                     'Advanced': row[1],
                     'Proficient': row[2],
                     'NumberScored': row[3],
-                    'Passing': row[4]
+                    'Total': row[4]
                 }
             result.append(r)
 
@@ -62,7 +65,7 @@ def get_map_api():
 
     results = []
 
-    if view=="pupil":
+    if view == "pupil":
         query = session.query(Base.classes.person_spend.AUN,
                               Base.classes.person_spend.LocalPupil,
                               Base.classes.person_spend.StatePupil,
@@ -78,12 +81,12 @@ def get_map_api():
                 'Total': row[1]+row[2]+row[3]
             }
             results.append(r)
-    elif view=="alg":
-        results=query_scores("keystone_algebra")
-    elif view=="bio":
-        results=query_scores("keystone_biology")
-    elif view=="lit":
-        results=query_scores("keystone_literature")
+    elif view == "alg":
+        results = query_scores("keystone_algebra")
+    elif view == "bio":
+        results = query_scores("keystone_biology")
+    elif view == "lit":
+        results = query_scores("keystone_literature")
     else:
         results = "Call pupil, alg, bio, or lit."
 
@@ -111,7 +114,7 @@ def get_scatter_api():
 def get_slope_api():
     results = {}
 
-    bio_prof=session.query(Base.classes.pa_schools.SchoolNumber,
+    bio_prof = session.query(Base.classes.pa_schools.SchoolNumber,
                            Base.classes.pa_schools.AUN,
                            Base.classes.keystone_biology.Advanced,
                            Base.classes.keystone_biology.Proficient,
@@ -125,7 +128,7 @@ def get_slope_api():
             r.append(cell)
         results["bio_prof"].append(r)
 
-    alg_prof=session.query(Base.classes.pa_schools.SchoolNumber,
+    alg_prof = session.query(Base.classes.pa_schools.SchoolNumber,
                            Base.classes.pa_schools.AUN,
                            func.sum(Base.classes.keystone_algebra.Advanced + Base.classes.keystone_algebra.Proficient)
                            ).group_by(Base.classes.pa_schools.AUN)
@@ -137,7 +140,7 @@ def get_slope_api():
             r.append(cell)
         results["alg_prof"].append(r)
 
-    lit_prof=session.query(Base.classes.pa_schools.SchoolNumber,
+    lit_prof = session.query(Base.classes.pa_schools.SchoolNumber,
                            Base.classes.pa_schools.AUN,
                            func.sum(Base.classes.keystone_literature.Advanced + Base.classes.keystone_literature.Proficient)
                            ).group_by(Base.classes.pa_schools.AUN)
@@ -188,7 +191,8 @@ def home():
 # calls the geojson file and passes it to a js var
 @app.route("/map")
 def get_map():
-    js_file = url_for('static', filename='map/andrew2.js')
+    js_file = url_for('static', filename='map/app.js')
+    # js_file = url_for('static', filename='map/andrew2.js')
     css_file = url_for('static', filename='map/andrew.css')
     data = ''
     with open('static/map/Pennsylvania_School_Districts_Boundaries.geojson') as file:
@@ -222,11 +226,11 @@ def get_map():
           <div class="inline-flex items-center">
             <label
               class="relative flex cursor-pointer items-center rounded-full p-3 text-green-900 border-green-900"
-              for="pupil_expend"
+              for="pupil"
               data-ripple-dark="true"
             >
               <input
-                id="pupil_expend"
+                id="pupil"
                 name="type"
                 type="radio"
                 class="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-full border border-blue-gray-200 text-green-900 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-green-900 hover:before:bg-green-900 hover:before:opacity-10"
@@ -245,7 +249,7 @@ def get_map():
             </label>
             <label
               class="mt-px cursor-pointer select-none font-light text-gray-700"
-              for="pupil_expend"
+              for="pupil"
             >
               Per Pupil Expenditure
             </label>
@@ -253,11 +257,11 @@ def get_map():
           <div class="inline-flex items-center">
             <label
               class="relative flex cursor-pointer items-center rounded-full p-3 text-indigo-700 border-indigo-700"
-              for="algebra"
+              for="alg"
               data-ripple-dark="true"
             >
               <input
-                id="algebra"
+                id="alg"
                 name="type"
                 type="radio"
                 class="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-full border border-blue-gray-200 text-indigo-700 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-indigo-700 hover:before:bg-indigo-700 hover:before:opacity-10"
@@ -275,7 +279,7 @@ def get_map():
             </label>
             <label
               class="mt-px cursor-pointer select-none font-light text-gray-700"
-              for="algebra"
+              for="alg"
             >
               Algebra Proficiency
             </label>
@@ -283,11 +287,11 @@ def get_map():
           <div class="inline-flex items-center">
             <label
               class="relative flex cursor-pointer items-center rounded-full p-3 text-fuchsia-800 border-fuchsia-800"
-              for="literature"
+              for="lit"
               data-ripple-dark="true"
             >
               <input
-                id="literature"
+                id="lit"
                 name="type"
                 type="radio"
                 class="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-full border border-blue-gray-200 text-fuchsia-800 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-fuchsia-800 hover:before:bg-fuchsia-800 hover:before:opacity-10"
@@ -305,7 +309,7 @@ def get_map():
             </label>
             <label
               class="mt-px cursor-pointer select-none font-light text-gray-700"
-              for="literature"
+              for="lit"
             >
               Literature Proficiency
             </label>
@@ -313,11 +317,11 @@ def get_map():
           <div class="inline-flex items-center">
             <label
               class="relative flex cursor-pointer items-center rounded-full p-3 text-green-800 border-green-800"
-              for="biology"
+              for="bio"
               data-ripple-dark="true"
             >
               <input
-                id="biology"
+                id="bio"
                 name="type"
                 type="radio"
                 class="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-full border border-blue-gray-200 text-green-800 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-green-800 hover:before:bg-green-800 hover:before:opacity-10"
@@ -335,7 +339,7 @@ def get_map():
             </label>
             <label
               class="mt-px cursor-pointer select-none font-light text-gray-700"
-              for="biology"
+              for="bio"
             >
               Biology Proficiency
             </label>
@@ -379,7 +383,7 @@ def get_slope():
     with open('static/slope/compare_ranks.json') as file:
         data = json.load(file)
 
-    note ='''
+    note = '''
         <p class="mb-4">The ranked slope chart below shows how school districts across the state rank according to Niche's compared to our value ratio rankings.
         <a class="underline"
             href="https://www.niche.com/about/methodology/best-school-districts/"
