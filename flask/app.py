@@ -387,9 +387,22 @@ def get_slope():
     controls = ""
     data = "",
     note ='''
-        # <p class="mb-4">The ranked slope chart below shows how school districts across the state rank according to Niche's compared to our value ratio rankings.  Niche's rankings are calculated according to the metrics outlined in the link below: https://www.niche.com/about/methodology/best-school-districts/.  Our value ratio was calculated by taking the average proficiency rate across the three Keystone exams (Algebra I, Biology, and Literature) and comparing it to district per pupil expenditure.  When non-academic factors such as clubs and activities, sports, and diversity are excluded from calculations, we can see a significant shift in the rankings.  We also see districts whose average proficiency scores greater than 85% falling to due to their high per pupil expenditure.  Other districts are achieving the same proficiency rate at a much lower cost.  Select a district from the dropdown menu to see how the two rankings compare.  To compare your district's performance and per pupil expenditure to others, click on the radar chart.
+        <p class="mb-4">The ranked slope chart below shows how school districts across the state rank according to Niche's compared to our value ratio rankings.
+        <a class="underline"
+            href="https://www.niche.com/about/methodology/best-school-districts/"
+            >
+            Niche's rankings are calculated according to the metrics outlined on its site.
+        </a>
+        <p class="mb-4">
+            Our value ratio was calculated by taking the average proficiency rate across the three Keystone exams (Algebra I, Biology, and Literature) and comparing it to district per pupil expenditure.
+            When non-academic factors such as clubs and activities, sports, and diversity are excluded from calculations, we can see a significant shift in the rankings.
+            We also see districts whose average proficiency scores greater than 85% falling to due to their high per pupil expenditure.
+            Other districts are achieving the same proficiency rate at a much lower cost.
+        <p>
+            Select a district from the dropdown menu to see how the two rankings compare.
+            To compare your district's performance and per pupil expenditure to others, click on the radar chart.
     '''
-    attribution = "Attribution here"
+    attribution = ""
 
     return render_template("vis.html",
                            js=js_file,
