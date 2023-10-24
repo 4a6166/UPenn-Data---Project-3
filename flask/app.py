@@ -516,8 +516,8 @@ def get_scatter():
 
 @app.route("/slope")
 def get_slope():
-    js_file = ""
-    css_file = ""
+    js_file = url_for('static', filename='slope/slope.js')
+    css_file = url_for('static', filename='map/andrew.css')
     controls = ""
     data = "",
     with open('static/slope/compare_ranks.json') as file:
@@ -539,7 +539,7 @@ def get_slope():
             Select a district from the dropdown menu to see how the two rankings compare.
             To compare your district's performance and per pupil expenditure to others, click on the radar chart.
     '''
-    attribution = ""
+    attribution = ''
 
     return render_template("vis.html",
                            js=js_file,
