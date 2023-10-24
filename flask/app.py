@@ -5,6 +5,10 @@ from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.sql import func
 import json
 
+# imports for scatter
+import pandas as pd
+import plotly.express as px
+
 # connect to DB
 engine = create_engine("sqlite:///pa_school_district.db")
 Base = automap_base()
@@ -97,17 +101,20 @@ def get_map_api():
 # API for scatter plots
 @app.route("/api/scatter", methods=['GET'])
 def get_scatter_api():
-    person_spend_data = []
-    data = session.execute("select * from person_spend;")
-    # data = session.execute("select AUN, District, County from person_spend;")
-    for row in data.fetchall():
-        r = []
-        for cell in row:
-            r.append(cell)
-        person_spend_data.append(r)
+    view = request.args.get('view', None)
+    results = []
 
-    return jsonify(person_spend_data)
-    # return jsonify(results)
+    query = session.query(
+            func.avg(Base.classes[view].Proficient)
+            ).join(Base.classes.person_spend,
+                   Base.classes.person_spend.AUN == Base.classes[view].AUN
+            ).group_by(Base.classes[view].AUN
+            ).order_by(Base.classes.person_spend.AUN.desc())
+
+    for row in query:
+        results.append(row[0])
+
+    return jsonify(results)
 
 
 # API for slope
