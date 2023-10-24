@@ -27,25 +27,6 @@ app = Flask(__name__,
 ######################################################################
 # Serves the API
 ######################################################################
-# if you go to "/api/getStats?stat=abc" the following is served: "abc"
-@app.route("/api/getStats", methods=['GET'])
-def get_api():
-    # results = request.args.get('stat', None)
-
-    # per pupil expend: sum( person_spend.LocalPupil, person_spend.StatePupil, person_spend.FedPupil )
-
-    person_spend_data = []
-    data = session.execute("select AUN, District, County from person_spend;")
-    for row in data.fetchall():
-        r = []
-        for cell in row:
-            r.append(cell)
-        person_spend_data.append(r)
-
-    return jsonify(person_spend_data)
-    # return jsonify(results)
-
-
 # API for map views
 @app.route("/api/map", methods=['GET'])
 def get_map_api():
@@ -109,7 +90,23 @@ def get_map_api():
     return jsonify(results)
 
 
-# example API for slope
+# API for scatter plots
+@app.route("/api/scatter", methods=['GET'])
+def get_scatter_api():
+    person_spend_data = []
+    data = session.execute("select * from person_spend;")
+    # data = session.execute("select AUN, District, County from person_spend;")
+    for row in data.fetchall():
+        r = []
+        for cell in row:
+            r.append(cell)
+        person_spend_data.append(r)
+
+    return jsonify(person_spend_data)
+    # return jsonify(results)
+
+
+# API for slope
 @app.route("/api/slope", methods=['GET'])
 def get_slope_api():
     results = {}
@@ -153,6 +150,12 @@ def get_slope_api():
         results["lit_prof"].append(r)
 
     return jsonify(results)
+
+
+# API for radar
+@app.route("/api/radar", methods=['GET'])
+def get_radar_api():
+    return "<p>Nothing here.<p>You feel a comfort in the quiet...<p>as if you never really wanted data for a radar chart at all."
 
 
 # Basic SQL query example
@@ -373,6 +376,9 @@ def get_slope():
     css_file = ""
     controls = ""
     data = "",
+    with open('static/slope/compare_ranks.json') as file:
+        data = json.load(file)
+
     note ='''
         <p class="mb-4">The ranked slope chart below shows how school districts across the state rank according to Niche's compared to our value ratio rankings.
         <a class="underline"
