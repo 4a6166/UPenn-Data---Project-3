@@ -470,10 +470,39 @@ def get_slope():
 
 @app.route("/radar")
 def get_radar():
-    js_file = ""
-    css_file = ""
-    controls = ""
+    js_file = url_for('static', filename='radar/radar.js')
+    css_file = url_for('static', filename='radar/style.css')
+    controls = '''
+        <div id="peter" class="container">
+            <!-- scripts and links from custom html -->
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+            <link rel="preconnect" href="https://fonts.googleapis.com">
+            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+            <link href="https://fonts.googleapis.com/css2?family=Signika+Negative:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+            <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+            <div class="search-bar">
+                <input type="text" id="schoolSearch" placeholder="Search for a school (ex: 'School_Name-District_Name')"/>
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <i class="fa-solid fa-xmark"></i>
+            </div>
+            <div class="chart-container">
+                <div class="radar-chart-container">
+                    <canvas id="myRadarChart"></canvas>
+                </div>
+                <div class="gauge-chart-container">
+                    <div id="gaugeChart"></div>
+                </div>
+            </div>
+        </div>
+    '''
+
     data = "",
+    with open('static/radar/keystone_expenditure.json') as file:
+        data = json.load(file)
+
     note = '''
     <p class="mb-8">Radar Chart
     <p class="mb-8">Uncover detailed school performance by selecting one school at a time. The radar chart provides a focused look at proficiency in subjects like Algebra, Biology, and Literature.
