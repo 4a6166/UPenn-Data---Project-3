@@ -11,8 +11,12 @@ let myMap = L.map("chart", {
   
   // Load the GeoJSON data.
   let geoData = data
+  let d1
   
   // Get the data with d3.
+d3.json("/api/map?view=lit").then( (d) => {
+    d1 = d
+    
     let valueProperty = "pupil_expend"; // Default valueProperty
     let geojson; // Define geojson globally
     let scale;
@@ -110,3 +114,10 @@ let myMap = L.map("chart", {
   
     // Initial map generation
     updateMap(valueProperty);
+})
+
+// pseudocode
+// for aun in geojson
+//    for jaun in json
+//      if aun == jaun
+//          goejson[proficient] == json[proficient]
