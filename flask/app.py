@@ -30,7 +30,78 @@ app = Flask(__name__,
 # if you go to "/api/getStats?stat=abc" the following is served: "abc"
 @app.route("/api/getStats", methods=['GET'])
 def get_api():
-    results = request.args.get('stat', None)
+    # results = request.args.get('stat', None)
+
+    # per pupil expend: sum( person_spend.LocalPupil, person_spend.StatePupil, person_spend.FedPupil )
+
+    person_spend_data = []
+    data = session.execute("select AUN, District, County from person_spend;")
+    for row in data.fetchall():
+        r = []
+        for cell in row:
+            r.append(cell)
+        person_spend_data.append(r)
+
+    return jsonify(person_spend_data)
+    # return jsonify(results)
+
+
+# API for map
+@app.route("/api/map", methods=['GET'])
+def get_map_api():
+    view = request.args.get('view', None)
+
+
+
+    return jsonify(view)
+
+
+
+
+
+# example API for slope
+@app.route("/api/slope", methods=['GET'])
+def get_slope_api():
+    results = {}
+
+    bio_prof=session.query(Base.classes.pa_schools.SchoolNumber,
+                           Base.classes.pa_schools.AUN,
+                           Base.classes.keystone_biology.Advanced,
+                           Base.classes.keystone_biology.Proficient,
+                           func.sum(Base.classes.keystone_biology.Advanced + Base.classes.keystone_biology.Proficient)
+                           ).group_by(Base.classes.pa_schools.AUN)
+
+    results["bio_prof"] = []
+    for row in bio_prof:
+        r = []
+        for cell in row:
+            r.append(cell)
+        results["bio_prof"].append(r)
+
+    alg_prof=session.query(Base.classes.pa_schools.SchoolNumber,
+                           Base.classes.pa_schools.AUN,
+                           func.sum(Base.classes.keystone_algebra.Advanced + Base.classes.keystone_algebra.Proficient)
+                           ).group_by(Base.classes.pa_schools.AUN)
+
+    results["alg_prof"] = []
+    for row in alg_prof:
+        r = []
+        for cell in row:
+            r.append(cell)
+        results["alg_prof"].append(r)
+
+    lit_prof=session.query(Base.classes.pa_schools.SchoolNumber,
+                           Base.classes.pa_schools.AUN,
+                           func.sum(Base.classes.keystone_literature.Advanced + Base.classes.keystone_literature.Proficient)
+                           ).group_by(Base.classes.pa_schools.AUN)
+
+    results["lit_prof"] = []
+    for row in lit_prof:
+        r = []
+        for cell in row:
+            r.append(cell)
+        results["lit_prof"].append(r)
+
     return jsonify(results)
 
 
@@ -68,7 +139,7 @@ def get_map():
     # css_file = url_for('static', filename='map/andrew.css')
     css_file = ""
     data = ''
-    with open('static/map/andrew.geojson') as file:
+    with open('static/map/Pennsylvania_School_Districts_Boundaries.geojson') as file:
         data = json.load(file)
 
     note = '''
@@ -253,7 +324,9 @@ def get_slope():
     css_file = ""
     controls = ""
     data = "",
-    note = "Notes here"
+    note ='''
+        # <p class="mb-4">The ranked slope chart below shows how school districts across the state rank according to Niche's compared to our value ratio rankings.  Niche's rankings are calculated according to the metrics outlined in the link below: https://www.niche.com/about/methodology/best-school-districts/.  Our value ratio was calculated by taking the average proficiency rate across the three Keystone exams (Algebra I, Biology, and Literature) and comparing it to district per pupil expenditure.  When non-academic factors such as clubs and activities, sports, and diversity are excluded from calculations, we can see a significant shift in the rankings.  We also see districts whose average proficiency scores greater than 85% falling to due to their high per pupil expenditure.  Other districts are achieving the same proficiency rate at a much lower cost.  Select a district from the dropdown menu to see how the two rankings compare.  To compare your district's performance and per pupil expenditure to others, click on the radar chart.
+    '''
     attribution = "Attribution here"
 
     return render_template("vis.html",
