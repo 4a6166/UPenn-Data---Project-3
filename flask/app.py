@@ -474,8 +474,15 @@ def get_radar():
     css_file = ""
     controls = ""
     data = "",
-    note = "Notes here"
-    attribution = "Attribution here"
+    note = '''
+    <p class="mb-8">Radar Chart
+    <p class="mb-8">Uncover detailed school performance by selecting one school at a time. The radar chart provides a focused look at proficiency in subjects like Algebra, Biology, and Literature.
+    <p class="mb-4">Gauge Chart
+    <p class="mb-8">Discover the range of per pupil expenditure, from $0 to tens of thousands. It's a glimpse into the financial backdrop shaping our schools.
+    <p class="mb-4">Search Bar
+    <p class="mb-4">Quickly find specific schools, based on the school name and district name. Type a name, hit enter, and see the charts dynamically update with the information you're interested in.
+    '''
+    attribution = ""
 
     return render_template("vis.html",
                            js=js_file,
