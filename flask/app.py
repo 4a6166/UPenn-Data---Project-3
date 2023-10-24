@@ -46,19 +46,42 @@ def get_api():
     # return jsonify(results)
 
 
-# API for map
+# API for map views
 @app.route("/api/map", methods=['GET'])
 def get_map_api():
     view = request.args.get('view', None)
 
-    
+    # return list of dicst with AUN, District, Advanced, Proficient, NumeberScored, and Passing (Advanced + Proficient)
+    def query_scores(s):
+        result=[]
+
+        query=session.query(
+                           Base.classes.keystone_algebra.AUN,
+                           func.avg(Base.classes[s].Advanced),
+                           func.avg(Base.classes[s].Proficient),
+                           func.sum(Base.classes[s].NumberScored),
+                           func.sum(Base.classes[s].Advanced + Base.classes[s].Proficient),
+                           Base.classes.pa_schools.District
+                           ).join(Base.classes.pa_schools,
+                                  Base.classes[s].AUN==Base.classes.pa_schools.AUN
+                           ).group_by(Base.classes[s].AUN)
+
+        for row in query:
+            r = {
+                    'AUN': row[0],
+                    'District': row[5],
+                    'Advanced': row[1],
+                    'Proficient': row[2],
+                    'NumberScored': row[3],
+                    'Passing': row[4]
+                }
+            result.append(r)
+
+        return result
+
     results = []
 
-    if view==None:
-        results = "Call pupil, alg, bio, or lit."
-
-    elif view=="pupil":
-
+    if view=="pupil":
         query = session.query(Base.classes.person_spend.AUN,
                               Base.classes.person_spend.LocalPupil,
                               Base.classes.person_spend.StatePupil,
@@ -75,60 +98,15 @@ def get_map_api():
             }
             results.append(r)
     elif view=="alg":
-        query=session.query(
-                           Base.classes.keystone_algebra.AUN,
-                           func.avg(Base.classes.keystone_algebra.Advanced),
-                           func.avg(Base.classes.keystone_algebra.Proficient),
-                           func.sum(Base.classes.keystone_algebra.NumberScored),
-                           func.sum(Base.classes.keystone_algebra.Advanced + Base.classes.keystone_algebra.Proficient),
-                           Base.classes.pa_schools.District
-                           ).join(Base.classes.pa_schools,
-                                  Base.classes.keystone_algebra.AUN==Base.classes.pa_schools.AUN
-                           ).group_by(Base.classes.keystone_algebra.AUN)
-
-        for row in query:
-            r = {
-                    'AUN': row[0],
-                    'District': row[5],
-                    'Advanced': row[1],
-                    'Proficient': row[2],
-                    'NumberScored': row[3],
-                    'Passing': row[4]
-                }
-            results.append(r)
+        results=query_scores("keystone_algebra")
     elif view=="bio":
-        query=session.query(
-                           Base.classes.keystone_biology.AUN,
-                           Base.classes.keystone_biology.Advanced,
-                           Base.classes.keystone_biology.Proficient
-                           )
-
-        for row in query:
-            r = {
-                    'AUN': row[0],
-                    'Advanced': row[1],
-                    'Proficient': row[2]
-                }
-            results.append(r)
+        results=query_scores("keystone_biology")
     elif view=="lit":
-        query=session.query(
-                           Base.classes.keystone_literature.AUN,
-                           Base.classes.keystone_literature.Advanced,
-                           Base.classes.keystone_literature.Proficient
-                           )
-
-        for row in query:
-            r = {
-                    'AUN': row[0],
-                    'Advanced': row[1],
-                    'Proficient': row[2]
-                }
-            results.append(r)
+        results=query_scores("keystone_literature")
+    else:
+        results = "Call pupil, alg, bio, or lit."
 
     return jsonify(results)
-
-
-
 
 
 # example API for slope
