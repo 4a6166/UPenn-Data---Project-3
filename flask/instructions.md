@@ -6,15 +6,15 @@ To start the app, run the following command from inside the `flask` directory:
 flask --app app.py --debug run
 ```
 The database is copied over from the SQLite folder.
-It is the "production" database, and is where all the data will be pulled from and passed through to your HTML and JS files.
+It is the "production" database, and is where all the data will be pulled from and passed through to the HTML and JS files.
 
 ## Structure
-The app hook into the `templates` directory and the `static` directory.
+The app hooks into the `templates` directory and the `static` directory.
 
 `static` holds CSS and Javascript files that will be statically served when the flask app is run.
-It also holds images and icons or whatever static files you want severed.
+It also holds images and icons.
 
-`templates` holds HTML templates that will be populated with info and graphs from the database and our JS files.
+`templates` holds HTML templates that will be populated with data that is either declared in app.py or stored as files in `static`.
 
 ## Passing Data Through
 Every visual is using the same base HTML template, `vis.html`.
@@ -22,7 +22,7 @@ The Flask app uses a method called `render_template()` to pull the template and 
 The placeholders look like this: `{{ data | tojson }}`.
 The first part of the placeholder is the variable that is being passed and the second is how it should be interpreted when being added to the HTML.
 
-Below is an example of what full method call looks like:
+Below is an example of what full `render_template()` call looks like, where everything after `"vis.html"` is a `*kwarg`:
 
 ```python
 return render_template("vis.html", 
@@ -41,7 +41,7 @@ Here are how the variables are being used:
 | js          | js_file     | Passes the location of the JS file containing your visualization
 | css         | css_file    | Passes the location of a CSS file you might need
 | controls    | controls    | HTML for the any controls you need to manipulate your visualizations, such as dropdowns or radio buttons
-| data        | data        | A variable passed to some JS in the HTML file, allows you to use the `data` var as if it was created by D3
+| data        | data        | A variable passed to some JS in the HTML file, allows you to use the `data` var from a JS file
 | note        | note        | The notes, in HTML form, that you want shown on the right of the visualization
 | attribution | attribution | The attribution or footnotes, in HTML, you want shown to the bottom right of the visualization
 

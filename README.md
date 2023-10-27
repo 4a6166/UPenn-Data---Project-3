@@ -24,10 +24,11 @@ Below are three PNGs with the schema and should be considered combined for query
 
 - Finance Schema
 
-![Fiance](./SQLiteDB/QuickDBD-finance.png)
+![Finance](./SQLiteDB/QuickDBD-finance.png)
 
 
 - Scores Schema
+
 ![Scores](./SQLiteDB/QuickDBD-scores.png)
 
 ### Output
