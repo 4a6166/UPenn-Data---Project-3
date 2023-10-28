@@ -1,3 +1,4 @@
+// refactor of andrew2.js to use APIs
 // create map
 let myMap = L.map("chart", {
   center: [41, -77.5],

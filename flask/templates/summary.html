@@ -7,8 +7,7 @@
                          items-center
                          ">
       <div class="grow flex flex-col justify-center items-center">
-        <p class="mb-3">Python was used to make a SQLite database, which was loaded and served via Flask to visualizations that use Leaflet, D3, and ChartJS.
-        <p>The stunning realization is: money spent on schools does/n't affect student scores in standardized tests.
+        {{ summary | safe }}
       </div>
     </div>
 {% endblock %}

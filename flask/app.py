@@ -1,20 +1,14 @@
-from flask import Flask, request, render_template, jsonify, url_for  # Lesson 10-3
+from flask import Flask, request, render_template, jsonify, url_for
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.sql import func
 import json
 
-# imports for scatter
-import pandas as pd
-import plotly.express as px
-
 # connect to DB
 engine = create_engine("sqlite:///pa_school_district.db")
 Base = automap_base()
 Base.prepare(autoload_with=engine)
-
-# TODO: should this be moved to open and close at each route?
 
 
 ######################################################################
@@ -37,6 +31,7 @@ def get_map_api():
     view = request.args.get('view', None)
 
     # return list of dicst with AUN, District, Advanced, Proficient, NumeberScored, and Total (Advanced + Proficient)
+    # TODO: move from local scope
     def query_scores(s):
         result = []
 
@@ -69,11 +64,13 @@ def get_map_api():
 
     results = []
 
+    # TODO: reused for scatter. Pull out into def.
     if view == "pupil":
         query = session.query(Base.classes.person_spend.AUN,
                               Base.classes.person_spend.LocalPupil,
                               Base.classes.person_spend.StatePupil,
                               Base.classes.person_spend.FedPupil
+                              # filted because data for AUN is outlier
                               ).filter(Base.classes.person_spend.AUN != "103022253"
                               ).group_by(Base.classes.person_spend.AUN)
 
@@ -128,6 +125,7 @@ def get_scatter_api():
     return jsonify(results)
 
 
+# Second API for scatter plots
 @app.route("/api/pupil")
 def get_scatter_pupil():
     session = Session(engine)
@@ -136,6 +134,7 @@ def get_scatter_pupil():
                           Base.classes.person_spend.LocalPupil,
                           Base.classes.person_spend.StatePupil,
                           Base.classes.person_spend.FedPupil
+                          # filtered out because data for AUN is incorrect
                           ).filter(Base.classes.person_spend.AUN != "103022253"
                           ).group_by(Base.classes.person_spend.AUN
                           ).order_by(Base.classes.person_spend.AUN.desc())
@@ -147,7 +146,7 @@ def get_scatter_pupil():
     return jsonify(results)
 
 
-# API for slope
+# API for slope - Not being used by graph
 @app.route("/api/slope", methods=['GET'])
 def get_slope_api():
     session = Session(engine)
@@ -195,50 +194,34 @@ def get_slope_api():
     return jsonify(results)
 
 
-# API for radar
+# API for radar - Not being used by the graphs
 @app.route("/api/radar", methods=['GET'])
 def get_radar_api():
     return "<p>Nothing here.<p>You feel a comfort in the quiet...<p>as if you never really wanted data for a radar chart at all."
 
 
-# Basic SQL query example
-@app.route("/api/example", methods=['GET'])
-def example():
-    session = Session(engine)
-    results = []
-    table = session.query(Base.classes.pa_schools.County,
-                          Base.classes.pa_schools.AUN,
-                          func.sum(Base.classes.keystone_biology.Advanced + Base.classes.keystone_biology.Proficient)
-                          ).group_by(Base.classes.pa_schools.County)
-
-    for row in table:
-        r = []
-        for cell in row:
-            r.append(cell)
-        results.append(r)
-
-    return jsonify(results)
-
-
 ######################################################################
 # Serves the webpages
 ######################################################################
+# Makes landing page
 @app.route("/")
 def home():
     # render the dashboard template
     return render_template("home.html", data="")
 
 
-# calls the geojson file and passes it to a js var
+# renders the Map page, passing in static downloaded geojson for school boundaries
+# but using api to pair it with data from the "/api/map" route
 @app.route("/map")
 def get_map():
     js_file = url_for('static', filename='map/app.js')
-    # js_file = url_for('static', filename='map/andrew2.js')
     css_file = url_for('static', filename='map/andrew.css')
     data = ''
+    # pass through downloaded geojson for district boundaries
     with open('static/map/Pennsylvania_School_Districts_Boundaries.geojson') as file:
         data = json.load(file)
 
+    # space for comments about the visualization
     note = '''
         <p class="mb-3">Use this map to explore how your school district compares to its neighboring districts and to the state overall.
         <p class="mb-3">Notice the clustering of Per Pupil Expenditure...
@@ -247,6 +230,7 @@ def get_map():
         <p>For that reason, we want to explore how related expenditure is to academic proficiency in Pennsylvania. Click onto the Scatter plot to explore this question.
            '''
 
+    # space for acknowledgements or footnotes
     attribution = '''
         <p>This is 2018-2019 data from the
            <a class="underline"
@@ -260,6 +244,7 @@ def get_map():
            (with some exceptions for those with special needs).
         '''
 
+    # controls that load below the visualization
     controls = '''
         <!-- Code for tailwind radio buttons https://www.material-tailwind.com/docs/html/radio-button -->
         <div id="andrew" class="flex gap-10 radio-buttons-container">
@@ -397,10 +382,12 @@ def get_map():
                            attribution=attribution)
 
 
+# renders the scatter plot, using the "/api/scatter" and "/api/pupil" routes
 @app.route("/scatter")
 def get_scatter():
     js_file = url_for('static', filename='scatter/scatter.js')
-    css_file = ""
+
+    # controls that load below the visualization
     controls = '''
         <fieldset>
             <div>
@@ -420,23 +407,22 @@ def get_scatter():
 
     note = 'Here are scatter plots showing the relationship between expense and performance across three categories.'
 
-    attribution = ''
-
     return render_template("vis.html",
                            js=js_file,
-                           css=css_file,
+                           css="",
                            controls=controls,
                            data="",
                            note=note,
-                           attribution=attribution)
+                           attribution="")
 
 
+# renders the slope chart
+# does not use the "/api/slope" route
 @app.route("/slope")
 def get_slope():
     js_file = url_for('static', filename='slope/slope.js')
-    css_file = url_for('static', filename='map/andrew.css')
-    controls = ""
     data = "",
+    # loads data pregenerated data into a var and passes it through html to js for the vis
     with open('static/slope/compare_ranks.json') as file:
         data = json.load(file)
 
@@ -456,17 +442,18 @@ def get_slope():
             Select a district from the dropdown menu to see how the two rankings compare.
             To compare your district's performance and per pupil expenditure to others, click on the radar chart.
     '''
-    attribution = ''
 
     return render_template("vis.html",
                            js=js_file,
-                           css=css_file,
-                           controls=controls,
+                           css="",
+                           controls="",
                            data=data,
                            note=note,
-                           attribution=attribution)
+                           attribution="")
 
 
+# renders the radar chart and gauge
+# does not use the "/api/radar" route
 @app.route("/radar")
 def get_radar():
     js_file = url_for('static', filename='radar/radar.js')
@@ -499,18 +486,18 @@ def get_radar():
     '''
 
     data = "",
+    # loads data pregenerated data into a var and passes it through html to js for the vis
     with open('static/radar/keystone_expenditure.json') as file:
         data = json.load(file)
 
     note = '''
-    <p class="mb-8">Radar Chart
-    <p class="mb-8">Uncover detailed school performance by selecting one school at a time. The radar chart provides a focused look at proficiency in subjects like Algebra, Biology, and Literature.
-    <p class="mb-4">Gauge Chart
-    <p class="mb-8">Discover the range of per pupil expenditure, from $0 to tens of thousands. It's a glimpse into the financial backdrop shaping our schools.
-    <p class="mb-4">Search Bar
-    <p class="mb-4">Quickly find specific schools, based on the school name and district name. Type a name, hit enter, and see the charts dynamically update with the information you're interested in.
+        <p class="mb-8">Radar Chart
+        <p class="mb-8">Uncover detailed school performance by selecting one school at a time. The radar chart provides a focused look at proficiency in subjects like Algebra, Biology, and Literature.
+        <p class="mb-4">Gauge Chart
+        <p class="mb-8">Discover the range of per pupil expenditure, from $0 to tens of thousands. It's a glimpse into the financial backdrop shaping our schools.
+        <p class="mb-4">Search Bar
+        <p class="mb-4">Quickly find specific schools, based on the school name and district name. Type a name, hit enter, and see the charts dynamically update with the information you're interested in.
     '''
-    attribution = ""
 
     return render_template("vis.html",
                            js=js_file,
@@ -518,12 +505,13 @@ def get_radar():
                            controls=controls,
                            data=data,
                            note=note,
-                           attribution=attribution)
+                           attribution="")
 
 
+# Unused Summary page
 @app.route("/summary")
 def get_summary():
-    return render_template("summary.html", data="")
+    return render_template("summary.html", summary="")
 
 
 # set debugger
